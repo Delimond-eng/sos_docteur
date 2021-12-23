@@ -216,7 +216,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                   },
                 ),
               )*/
-              if (widget.profil.agenda.isNotEmpty)
+              if (widget.profil.agenda != null &&
+                  widget.profil.agenda.isNotEmpty)
                 // ignore: sized_box_for_whitespace
                 Container(
                   height: 130,
@@ -544,7 +545,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
           )
         ],
       ),
-      child: (widget.profil.experiences.isNotEmpty)
+      child: (widget.profil.experiences != null &&
+              widget.profil.experiences.isNotEmpty)
           ? Container(
               height: 150.0,
               width: MediaQuery.of(context).size.width,
@@ -714,7 +716,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                   ),
                   const SizedBox(height: 5.0),
                   Text(
-                    widget.supDatas.specialites.isNotEmpty
+                    widget.supDatas.specialites != null &&
+                            widget.supDatas.specialites.isNotEmpty
                         ? widget.supDatas.specialites.length > 1
                             ? widget.supDatas.specialites[0].specialite + ",..."
                             : widget.supDatas.specialites[0].specialite

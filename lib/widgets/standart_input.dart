@@ -126,16 +126,9 @@ class _StandardInputState extends State<StandardInput> {
                     icon: Container(
                       width: 50.0,
                       height: 50.0,
-                      decoration: BoxDecoration(
-                        color: Colors.blue[900].withOpacity(.5),
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(30.0),
-                          bottomRight: Radius.circular(30.0),
-                        ),
-                      ),
                       child: Icon(
                         widget.icon,
-                        color: Colors.white,
+                        color: Colors.cyan,
                         size: 15.0,
                       ),
                     ),

@@ -68,63 +68,48 @@ class MedScheduleCard extends StatelessWidget {
                       ],
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "RDV",
-                          style: GoogleFonts.lato(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ),
-                        Divider(color: Colors.grey[300], thickness: 0.5),
-                        const SizedBox(
-                          height: 5.0,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.calendar_today_rounded,
-                                    size: 15.0,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(
-                                    width: 8.0,
-                                  ),
-                                  Text(
-                                    data.consultationDate,
-                                    style: GoogleFonts.lato(
-                                      color: Colors.yellow[200],
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 8.0,
-                                  ),
-                                  Icon(
-                                    Icons.timer,
-                                    size: 15.0,
-                                    color: Colors.orange,
-                                  ),
-                                  Text(
-                                    "${data.heureDebut} à ${data.heureFin}",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.white,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )
-                                ],
+                        Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                CupertinoIcons.calendar,
+                                size: 15.0,
+                                color: Colors.white,
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                width: 8.0,
+                              ),
+                              Text(
+                                strDateLongFr(data.consultationDate),
+                                style: GoogleFonts.lato(
+                                  color: Colors.yellow[200],
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8.0,
+                              ),
+                              Icon(
+                                Icons.timer,
+                                size: 15.0,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 8.0,
+                              ),
+                              Text(
+                                "${data.heureDebut} à ${data.heureFin}",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -150,7 +135,7 @@ class MedScheduleCard extends StatelessWidget {
                             height: 5.0,
                           ),
                           Text(
-                            data.nom,
+                            truncateString(data.nom, 15, pointed: true),
                             style: style1(
                                 fontSize: 18.0, fontWeight: FontWeight.w800),
                           ),

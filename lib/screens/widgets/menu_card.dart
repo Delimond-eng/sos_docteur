@@ -79,7 +79,11 @@ class MenuCard extends StatelessWidget {
     return Flexible(
       child: Container(
         decoration: BoxDecoration(
-          color: color,
+          image: const DecorationImage(
+            image: AssetImage("assets/images/shapes/bg10.jpg"),
+            fit: BoxFit.cover,
+            scale: 1.5,
+          ),
           borderRadius: BorderRadius.circular(5.0),
           boxShadow: [
             BoxShadow(
@@ -89,40 +93,53 @@ class MenuCard extends StatelessWidget {
             )
           ],
         ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(5.0),
-          child: InkWell(
+        child: Container(
+          decoration: BoxDecoration(
+            color: color.withOpacity(.8),
             borderRadius: BorderRadius.circular(5.0),
-            onTap: onPressed,
-            child: Container(
-              height: 120.0,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: SvgPicture.asset(
-                      "assets/images/vector/$icon",
-                      height: 40.0,
-                      width: 40.0,
-                      color: subColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(.4),
+                blurRadius: 12.0,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(5.0),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(5.0),
+              onTap: onPressed,
+              child: Container(
+                height: 120.0,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: SvgPicture.asset(
+                        "assets/images/vector/$icon",
+                        height: 40.0,
+                        width: 40.0,
+                        color: subColor,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lato(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500,
-                      color: subColor,
+                    const SizedBox(
+                      height: 10.0,
                     ),
-                  ),
-                ],
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.lato(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                        color: subColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

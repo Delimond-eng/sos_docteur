@@ -113,9 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                   "vous devez cocher la une case d'utilisation !",
                   snackPosition: SnackPosition.TOP,
                   colorText: Colors.white,
-                  backgroundColor: Colors.amber[900],
+                  backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
-                  borderRadius: 2,
+                  borderRadius: 10,
                   duration: const Duration(seconds: 2),
                 );
                 return;
@@ -126,9 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                   "vous devez entrer votre identifiant pour vous connecter!",
                   snackPosition: SnackPosition.TOP,
                   colorText: Colors.white,
-                  backgroundColor: Colors.amber[900],
+                  backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
-                  borderRadius: 2,
+                  borderRadius: 10,
                 );
                 return;
               }
@@ -138,9 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                   "vous devez entrer votre mot de passe pour vous connecter!",
                   snackPosition: SnackPosition.TOP,
                   colorText: Colors.white,
-                  backgroundColor: Colors.amber[900],
+                  backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
-                  borderRadius: 2,
+                  borderRadius: 10,
                 );
                 return;
               }
@@ -162,9 +162,9 @@ class _LoginPageState extends State<LoginPage> {
                     "vos identifiants de connexion sont erronés !",
                     snackPosition: SnackPosition.TOP,
                     colorText: Colors.white,
-                    backgroundColor: Colors.amber[900],
+                    backgroundColor: Colors.black87,
                     maxWidth: MediaQuery.of(context).size.width - 4,
-                    borderRadius: 2,
+                    borderRadius: 10,
                     duration: const Duration(seconds: 2),
                   );
                   return;
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                   await Navigator.pushAndRemoveUntil(
                       context,
                       PageTransition(
-                        type: PageTransitionType.bottomToTop,
+                        type: PageTransitionType.rightToLeftWithFade,
                         alignment: Alignment.topCenter,
                         child: MedecinHomeScreen(),
                       ),
@@ -191,9 +191,9 @@ class _LoginPageState extends State<LoginPage> {
                     "vos identifiants de connexion sont erronés !",
                     snackPosition: SnackPosition.TOP,
                     colorText: Colors.white,
-                    backgroundColor: Colors.amber[900],
+                    backgroundColor: Colors.black87,
                     maxWidth: MediaQuery.of(context).size.width - 4,
-                    borderRadius: 2,
+                    borderRadius: 10,
                     duration: const Duration(seconds: 2),
                   );
                   return;

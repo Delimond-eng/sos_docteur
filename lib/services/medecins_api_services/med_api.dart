@@ -56,7 +56,8 @@ class MedecinApi {
   ///@param [consultId] for closing
   // ignore: missing_return
 
-  static Future consulting(String consultId, String consultRef, {key}) async {
+  static Future consulting(
+      {String consultId, String consultRef, String key}) async {
     String medecinId = storage.read("medecin_id");
     var response;
     try {
@@ -76,11 +77,12 @@ class MedecinApi {
           response = await DApi.request(
             body: <String, dynamic>{
               "medecin_id": medecinId,
-              "consultation_rdv_id": consultId,
+              "consultation_id": consultId,
             },
             method: "post",
             url: "medecins/consultations/cloturer",
           );
+          storage.remove("consult_id");
           break;
       }
     } catch (err) {
@@ -113,7 +115,7 @@ class MedecinApi {
           "pass": medecin.password
         },
         method: "post",
-        url: "connexion/medecins/compte/login",
+        url: "medecins/compte/login",
       );
     } catch (err) {
       print("error from medecin login $err");

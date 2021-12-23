@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sos_docteur/constants/style.dart';
@@ -25,7 +24,6 @@ import 'package:sos_docteur/video_calls/pages/pickup_layout.dart';
 
 import 'package:sos_docteur/widgets/menu_item_widget.dart';
 
-import '../data_connection_screen.dart';
 import 'widgets/custom_header_widget7.dart';
 import 'widgets/menu_card.dart';
 
@@ -41,34 +39,9 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
 
   String uid = storage.read("medecin_id").toString();
 
-  checkData() {
-    listener = DataConnectionChecker().onStatusChange.listen((status) async {
-      if (status == DataConnectionStatus.disconnected) {
-        /*Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: DataConnectionScreen(),
-          ),
-          (Route<dynamic> route) => false,
-        );*/
-      } else {
-        Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: MedecinHomeScreen(),
-          ),
-          (Route<dynamic> route) => false,
-        );
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    checkData();
   }
 
   @override
@@ -260,9 +233,8 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .030,
+                                const SizedBox(
+                                  height: 10.0,
                                 ),
                                 Row(
                                   children: [
@@ -303,9 +275,8 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .030,
+                                const SizedBox(
+                                  height: 10.0,
                                 ),
                                 Row(
                                   children: [

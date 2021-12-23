@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sos_docteur/constants/globals.dart';
+import 'package:sos_docteur/models/configs_model.dart';
 import 'package:sos_docteur/screens/widgets/menu_card.dart';
 
 import '../../index.dart';
@@ -35,8 +36,11 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
   final textVille = TextEditingController();
   final textAdresse = TextEditingController();
   final textEtude = TextEditingController();
-  String selectedSpeciality;
+  Specialites selectedSpeciality;
   String selectedLangue;
+
+  //numero d'ordre
+  final textNumOrdre = TextEditingController();
 
   void clean() {
     setState(() {
@@ -90,14 +94,13 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                         left: 16.0, right: 16.0, top: 20.0, bottom: 10),
                     child: _header(),
                   ),
-                  const SizedBox(height: 30.0),
                   Expanded(
                     child: Container(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16.0,
                         ),
-                        physics: const ScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: _profils(context),
                       ),
                     ),
@@ -163,7 +166,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                           storage.write("photo", avatar);
                           Get.back();
 
-                          XDialog.showSuccessUserAlert(context);
+                          XDialog.showSuccessAnimation(context);
                           await medecinController.refreshDatas();
                         } else {
                           Get.snackbar(
@@ -207,7 +210,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                           storage.write("photo", avatar);
                           Get.back();
 
-                          XDialog.showSuccessUserAlert(context);
+                          XDialog.showSuccessAnimation(context);
                           await medecinController.refreshDatas();
                         } else {
                           Get.snackbar(
@@ -385,13 +388,13 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
           ),
         ),
         const SizedBox(
-          height: 10,
+          height: 8,
         ),
         Text(
-          "Veuillez renseigner plus d'informations sur vous et sur ce que vous faites pour permettre aux patients d'en savoir un peu plus sur vous !",
+          "Veuillez renseigner plus d'informations sur vous!",
           textAlign: TextAlign.center,
           style: GoogleFonts.lato(
-            color: Colors.amber[900],
+            color: Colors.white,
             shadows: [
               const Shadow(
                 color: Colors.black12,
@@ -400,8 +403,113 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
               )
             ],
             fontSize: 15.0,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
           ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        LargeBtn(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Center(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Dialog(
+                      child: Container(
+                        height: 180.0,
+                        color: Colors.white,
+                        padding: const EdgeInsets.all(10.0),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Saisir votre numéro d'ordre",
+                              style: GoogleFonts.lato(
+                                  fontSize: 18.0, fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(
+                              height: 20.0,
+                            ),
+                            StandardInput(
+                              hintText: "Entrez votre n° d'ordre",
+                              icon: CupertinoIcons.pencil,
+                              radius: 5.0,
+                              controller: textNumOrdre,
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Container(
+                              height: 50.0,
+                              width: double.infinity,
+                              child: RaisedButton(
+                                elevation: 5.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                color: Colors.cyan,
+                                child: const Icon(
+                                  CupertinoIcons.check_mark,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () async {
+                                  if (textNumOrdre.text.isEmpty) {
+                                    Get.snackbar(
+                                      "Action obligatoire!",
+                                      "vous devez saisir votre n° d'ordre médical !",
+                                      snackPosition: SnackPosition.TOP,
+                                      colorText: Colors.red[400],
+                                      backgroundColor: Colors.black87,
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width - 4,
+                                      borderRadius: 10,
+                                      duration: const Duration(seconds: 5),
+                                    );
+                                    return;
+                                  }
+
+                                  Xloading.showLottieLoading(context);
+                                  var res =
+                                      await MedecinApi.enregistrerNumOrdre(
+                                          numero: textNumOrdre.text);
+                                  if (res != null) {
+                                    Xloading.dismiss();
+                                    if (res["reponse"]["status"] == "success") {
+                                      XDialog.showSuccessAnimation(context);
+                                      await medecinController.refreshDatas();
+                                      Get.back();
+                                    }
+                                  } else {
+                                    Xloading.dismiss();
+                                    Get.snackbar(
+                                      "Echec!",
+                                      "echec survenu lors de l'envoi de données au serveur!,veuillez réessayer svp!",
+                                      snackPosition: SnackPosition.TOP,
+                                      colorText: Colors.white,
+                                      backgroundColor: Colors.pinkAccent,
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width - 4,
+                                      borderRadius: 2,
+                                      duration: const Duration(seconds: 3),
+                                    );
+                                  }
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+                ;
+              },
+            );
+          },
         ),
         const SizedBox(height: 10.0),
         Row(
@@ -425,10 +533,11 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Personnaliser votre/vos spécialités ",
+                                "Ajoutez vos spécialités ",
                                 style: GoogleFonts.lato(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w800),
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                               const SizedBox(
                                 height: 20.0,
@@ -455,10 +564,11 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                       child: Container(
                                         height: 50,
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.width -
+                                                20,
                                         padding:
                                             const EdgeInsets.only(right: 5),
-                                        child: DropdownButton<String>(
+                                        child: DropdownButton(
                                           menuMaxHeight: 300,
                                           alignment: Alignment.centerRight,
                                           dropdownColor: Colors.grey[100],
@@ -476,18 +586,20 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                                 fontStyle: FontStyle.italic),
                                           ),
                                           isExpanded: true,
-                                          items: specialities.map((e) {
-                                            return DropdownMenuItem<String>(
+                                          items: patientController.specialities
+                                              .map((e) {
+                                            return DropdownMenuItem(
                                                 value: e,
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
                                                           left: 10.0),
                                                   child: Text(
-                                                    "$e",
+                                                    e.specialite,
                                                     style: GoogleFonts.lato(
-                                                        fontWeight:
-                                                            FontWeight.w400),
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
                                                   ),
                                                 ));
                                           }).toList(),
@@ -495,33 +607,34 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                             setter(() {
                                               selectedSpeciality = value;
                                             });
+                                            print(value.specialiteId);
                                           },
                                         ),
                                       ),
                                     ),
                                     GestureDetector(
                                       onTap: () async {
-                                        if (selectedSpeciality == null ||
-                                            selectedSpeciality ==
-                                                specialities[0]) {
+                                        if (selectedSpeciality == null) {
                                           Get.snackbar(
                                             "champs obligatoire!",
                                             "vous devez sélectionner une spécialité dans la liste !",
                                             snackPosition: SnackPosition.TOP,
                                             colorText: Colors.white,
-                                            backgroundColor: Colors.amber[900],
+                                            backgroundColor: Colors.black87,
                                             maxWidth: MediaQuery.of(context)
                                                     .size
                                                     .width -
                                                 4,
-                                            borderRadius: 2,
+                                            borderRadius: 10,
                                             duration:
                                                 const Duration(seconds: 3),
                                           );
                                           return;
                                         }
                                         Medecins medecin = Medecins(
-                                            specialite: selectedSpeciality);
+                                          specialite:
+                                              selectedSpeciality.specialiteId,
+                                        );
                                         Xloading.showLottieLoading(context);
                                         var res = await MedecinApi.configProfil(
                                             key: "specialite",
@@ -533,11 +646,6 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                             XDialog.showSuccessAnimation(
                                                 context);
 
-                                            setter(() {
-                                              selectedSpeciality =
-                                                  specialities[0];
-                                            });
-
                                             await medecinController
                                                 .refreshDatas();
                                             clean();
@@ -548,13 +656,13 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                             "Echec!",
                                             "echec survenu lors de l'envoi de données au serveur!,\nveuillez réessayer svp!",
                                             snackPosition: SnackPosition.TOP,
-                                            colorText: Colors.white,
-                                            backgroundColor: Colors.amber[900],
+                                            colorText: Colors.red[200],
+                                            backgroundColor: Colors.black87,
                                             maxWidth: MediaQuery.of(context)
                                                     .size
                                                     .width -
                                                 4,
-                                            borderRadius: 2,
+                                            borderRadius: 10,
                                             duration:
                                                 const Duration(seconds: 3),
                                           );
@@ -562,13 +670,9 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                       },
                                       child: Container(
                                         height: 50.0,
-                                        width: 50.0,
+                                        width: 70.0,
                                         decoration: BoxDecoration(
                                           color: primaryColor,
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            topLeft: Radius.circular(20),
-                                          ),
                                         ),
                                         child: const Center(
                                           child: Icon(CupertinoIcons.add,
@@ -587,7 +691,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                   },
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
+                      top: Radius.zero,
                     ),
                   ),
                 );
@@ -962,7 +1066,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                           if (res != null) {
                             Xloading.dismiss();
                             if (res["reponse"]["status"] != null) {
-                              XDialog.showSuccessUserAlert(context);
+                              XDialog.showSuccessAnimation(context);
                               await medecinController.refreshDatas();
                               clean();
                             }
@@ -1000,7 +1104,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                     context: context,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20.0),
+                        top: Radius.zero,
                       ),
                     ),
                     builder: (context) {
@@ -1116,7 +1220,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                         Xloading.dismiss();
                                         if (res["reponse"]["status"] ==
                                             "success") {
-                                          XDialog.showSuccessUserAlert(context);
+                                          XDialog.showSuccessAnimation(context);
                                           setState(() {
                                             selectedLangue = langues[0];
                                           });
@@ -1142,13 +1246,9 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                                     },
                                     child: Container(
                                       height: 50.0,
-                                      width: 50.0,
+                                      width: 70.0,
                                       decoration: BoxDecoration(
                                         color: primaryColor,
-                                        borderRadius: const BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          topLeft: Radius.circular(20),
-                                        ),
                                       ),
                                       child: const Center(
                                         child: Icon(CupertinoIcons.add,
@@ -1168,6 +1268,81 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class LargeBtn extends StatelessWidget {
+  final Function onPressed;
+  const LargeBtn({
+    Key key,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70.0,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage("assets/images/shapes/bg10.jpg"),
+          fit: BoxFit.cover,
+          scale: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 10.0,
+            offset: const Offset(0, 3),
+            color: Colors.black.withOpacity(.1),
+          )
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.green[700].withOpacity(.8),
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 10.0,
+              offset: const Offset(0, 3),
+              color: Colors.black.withOpacity(.1),
+            )
+          ],
+        ),
+        child: Material(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(5),
+            onTap: onPressed,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(
+                    CupertinoIcons.check_mark_circled_solid,
+                    color: Colors.white,
+                    size: 16.0,
+                  ),
+                  const SizedBox(
+                    width: 5.0,
+                  ),
+                  Text(
+                    "Enregistrer votre numéro d'ordre",
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

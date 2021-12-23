@@ -22,7 +22,9 @@ String dateFromString(DateTime date) {
 }
 
 DateTime strTodate(String date) {
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
+  final DateFormat formatter = (date.contains("-"))
+      ? DateFormat('dd-MM-yyyy')
+      : DateFormat('dd/MM/yyyy');
   DateTime d = formatter.parse(date);
   return d;
 }
@@ -56,8 +58,12 @@ showDateBox(context) async {
   return date;
 }
 
-String truncateString(String text, int length) {
-  return (text.length >= length) ? text.substring(0, length) : text;
+String truncateString(String text, int length, {bool pointed = false}) {
+  return (text.length >= length)
+      ? ((pointed)
+          ? text.substring(0, length) + "..."
+          : text.substring(0, length))
+      : text;
 }
 
 /*Swiper(

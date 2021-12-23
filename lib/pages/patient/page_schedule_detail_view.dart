@@ -422,7 +422,7 @@ class _PageScheduleDetailViewState extends State<PageScheduleDetailView> {
     );
   }
 
-  Future<void> onJoin() async {
+  Future<void> onJoin({String consultationRdvId}) async {
     // update input validation
     await handleCameraAndMic(Permission.camera);
     await handleCameraAndMic(Permission.microphone);
@@ -441,17 +441,36 @@ class _PageScheduleDetailViewState extends State<PageScheduleDetailView> {
         receiverId: widget.data.medecin.medecinId,
         channelId:
             '$uid${widget.data.medecin.medecinId}${math.Random().nextInt(1000).toString()}');
-    await CallMethods.makeCall(call: call);
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CallScreen(
-          role: ClientRole.Broadcaster,
-          call: call,
-          hasCaller: true,
-        ),
-      ),
-    );
+
+    await MedecinApi.consulting(
+      key: "start",
+      consultId: consultationRdvId,
+      consultRef:
+          '$uid${widget.data.medecin.medecinId}${math.Random().nextInt(1000).toString()}',
+    ).then((res) async {
+      if (res != null) {
+        storage.write("consult_id", res["reponse"]["consultation_id"]);
+        await CallMethods.makeCall(call: call);
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CallScreen(
+              role: ClientRole.Broadcaster,
+              call: call,
+              hasCaller: true,
+            ),
+          ),
+        );
+      } else {
+        XDialog.showConfirmation(
+          content: "Cette consultation a été déjà effectuée !",
+          title: "Echec de la consultation",
+          context: context,
+          icon: CupertinoIcons.info,
+        );
+        return;
+      }
+    });
   }
 }
 

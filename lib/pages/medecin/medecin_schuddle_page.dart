@@ -1,4 +1,5 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sos_docteur/video_calls/models/call_model.dart';
 import 'package:sos_docteur/video_calls/pages/call_screen.dart';
@@ -17,7 +18,15 @@ class MedecinScheddulePage extends StatefulWidget {
   _MedecinScheddulePageState createState() => _MedecinScheddulePageState();
 }
 
-class _MedecinScheddulePageState extends State<MedecinScheddulePage> {
+class _MedecinScheddulePageState extends State<MedecinScheddulePage>
+    with SingleTickerProviderStateMixin {
+  TabController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(vsync: this, length: 2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PickupLayout(
@@ -93,60 +102,18 @@ class _MedecinScheddulePageState extends State<MedecinScheddulePage> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 10.0, top: 5.0, right: 16.0, left: 16.0),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            // ignore: sized_box_for_whitespace
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width,
-                              // ignore: deprecated_member_use
-                              child: RaisedButton(
-                                elevation: 10.0,
-                                color: Colors.blue[900],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0)),
-                                child: Text(
-                                  "Tout",
-                                  style: GoogleFonts.lato(color: Colors.white),
-                                ),
-                                onPressed: () {},
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Flexible(
-                            // ignore: sized_box_for_whitespace
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 40.0,
-                              // ignore: deprecated_member_use
-                              child: RaisedButton(
-                                elevation: 5.0,
-                                color: Colors.white.withOpacity(.7),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                                child: Text(
-                                  "Récents",
-                                  style: GoogleFonts.lato(
-                                    color: Colors.blue[900],
-                                  ),
-                                ),
-                                onPressed: () {},
-                              ),
-                            ),
-                          )
-                        ],
+                    Expanded(
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            tabHeader(),
+                            tabBody(),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 10.0),
-                    Expanded(child: _listSchedule(context))
                   ],
                 );
               }),
@@ -157,52 +124,153 @@ class _MedecinScheddulePageState extends State<MedecinScheddulePage> {
     );
   }
 
-  Widget _listSchedule(context) {
-    return ListView.builder(
-      padding: const EdgeInsets.only(
-          bottom: 60.0, right: 15.0, left: 15.0, top: 10.0),
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemCount: medecinController.medecinRdvs.length,
-      itemBuilder: (context, index) {
-        var data = medecinController.medecinRdvs[index];
-        return MedScheduleCard(
-          data: data,
-          onCalling: () async {
-            // update input validation
-            await handleCameraAndMic(Permission.camera);
-            await handleCameraAndMic(Permission.microphone);
+  Widget tabBody() {
+    return Expanded(
+      child: Container(
+        child: TabBarView(
+          physics: const BouncingScrollPhysics(),
+          controller: controller,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: _listSchedule(context),
+            ),
+            Center(
+              child: Text("Pas prêt !"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-            String uid = storage.read("medecin_id");
-            String uName = storage.read('medecin_nom');
-            String uPic = storage.read('photo');
-
-            Call call = Call(
-                callerId: uid,
-                callerName: uName,
-                callerPic: uPic,
-                callerType: "medecin",
-                receiverName: data.nom,
-                receiverPic: "",
-                receiverType: "medecin",
-                receiverId: data.patientId,
-                channelId:
-                    '$uid${data.patientId}${math.Random().nextInt(1000).toString()}');
-            await CallMethods.makeCall(call: call);
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CallScreen(
-                  role: ClientRole.Broadcaster,
-                  call: call,
-                  hasCaller: true,
+  Widget tabHeader() {
+    return Container(
+      width: double.infinity,
+      height: 50.0,
+      decoration: BoxDecoration(
+          color: primaryColor.withOpacity(.4),
+          borderRadius: BorderRadius.circular(30.0)),
+      margin: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: TabBar(
+        controller: controller,
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: BubbleTabIndicator(
+          indicatorHeight: 47.0,
+          indicatorColor: primaryColor,
+          tabBarIndicatorSize: TabBarIndicatorSize.label,
+          indicatorRadius: 30,
+        ),
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white,
+        labelStyle: GoogleFonts.mulish(
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+        ),
+        unselectedLabelStyle: GoogleFonts.mulish(
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        ),
+        tabs: [
+          Tab(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      size: 16.0,
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    const Text("En cours"),
+                  ],
                 ),
-              ),
-            );
-          },
-          onCancelled: () {},
-        );
-      },
+              ],
+            ),
+          ),
+          Tab(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      CupertinoIcons.calendar,
+                      size: 16.0,
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    const Text("Antérieures"),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _listSchedule(context) {
+    return Scrollbar(
+      radius: const Radius.circular(5),
+      thickness: 5.0,
+      child: ListView.builder(
+        padding: const EdgeInsets.only(
+            bottom: 60.0, right: 15.0, left: 15.0, top: 10.0),
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        itemCount: medecinController.medecinRdvs.length,
+        itemBuilder: (context, index) {
+          var data = medecinController.medecinRdvs[index];
+          return MedScheduleCard(
+            data: data,
+            onCalling: () async {
+              // update input validation
+              await handleCameraAndMic(Permission.camera);
+              await handleCameraAndMic(Permission.microphone);
+
+              String uid = storage.read("medecin_id");
+              String uName = storage.read('medecin_nom');
+              String uPic = storage.read('photo');
+
+              Call call = Call(
+                  callerId: uid,
+                  callerName: uName,
+                  callerPic: uPic,
+                  callerType: "medecin",
+                  receiverName: data.nom,
+                  receiverPic: "",
+                  receiverType: "medecin",
+                  receiverId: data.patientId,
+                  channelId:
+                      '$uid${data.patientId}${math.Random().nextInt(1000).toString()}');
+              await CallMethods.makeCall(call: call);
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CallScreen(
+                    role: ClientRole.Broadcaster,
+                    call: call,
+                    hasCaller: true,
+                  ),
+                ),
+              );
+            },
+            onCancelled: () {},
+          );
+        },
+      ),
     );
   }
 }
