@@ -18,7 +18,7 @@ class SpecialityCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 10.0),
       decoration: BoxDecoration(
         color: isActive ? primaryColor.withOpacity(.6) : Colors.white,
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(30.0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(.3),
@@ -43,7 +43,7 @@ class SpecialityCard extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 8.0),
                   decoration: BoxDecoration(
                     color: primaryColor.withOpacity(.5),
-                    borderRadius: BorderRadius.circular(6.0),
+                    shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: SvgPicture.asset(

@@ -38,7 +38,12 @@ class Header1 extends StatelessWidget {
               onTap: onLoggedIn,
               child: Container(
                 decoration: BoxDecoration(
-                  color: primaryColor,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.cyan,
+                      primaryColor,
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(20.0),
                   boxShadow: [
                     BoxShadow(

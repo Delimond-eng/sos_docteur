@@ -187,46 +187,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 15.0, top: 10.0, right: 15.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          SvgPicture.asset(
-                                            "assets/icons/medicine-sign.svg",
-                                            height: 20.0,
-                                            width: 20.0,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                          const SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Text(
-                                            "Spécialités",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 17.0,
-                                              letterSpacing: 1.0,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Btn(
-                                        onPressed: () async {
-                                          Xloading.showLottieLoading(context);
-                                          var datas = await PatientApi
-                                              .viewHomeContents();
-                                          if (datas != null) {
-                                            Xloading.dismiss();
-
-                                            patientController.platformMedecins
-                                                .value = datas.content.medecins;
-                                          }
-                                        },
-                                      )
-                                    ],
+                                    left: 15.0,
+                                    top: 10.0,
+                                    right: 15.0,
+                                    bottom: 5.0,
+                                  ),
+                                  child: Text(
+                                    "Filtrez le Médecin par spécialité",
+                                    style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 17.0,
+                                      letterSpacing: 1.0,
+                                      color: primaryColor,
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -248,16 +221,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                           patientController.specialities[index];
                                       return SpecialityCard(
                                         title: data.specialite,
-                                        icon:
-                                            "assets/icons/doctor-trichologist.svg",
+                                        icon: "assets/icons/filter1.svg",
                                         isActive: data.isActive,
                                         onPressed: () async {},
                                       );
                                     },
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 10.0,
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15.0,
+                                    top: 10.0,
+                                    bottom: 10.0,
+                                    right: 15.0,
+                                  ),
+                                  child: Text(
+                                    "Nos Médecins",
+                                    style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 17.0,
+                                        letterSpacing: 1.0,
+                                        color: primaryColor),
+                                  ),
                                 ),
                                 Container(
                                   width: _size.width,
@@ -355,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, AsyncSnapshot<List<HomeMedecins>> snapshot) {
         if (snapshot.data == null) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Shimmer.fromColors(
               direction: ShimmerDirection.ltr,
               baseColor: Colors.grey[500],
@@ -373,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 100,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(20.0),
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
                           const SizedBox(
@@ -383,25 +368,32 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                height: 30,
-                                width: 200,
-                                color: Colors.white,
-                              ),
+                                  height: 30,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                  )),
                               const SizedBox(
                                 height: 10.0,
                               ),
                               Container(
-                                height: 10,
-                                width: 200,
-                                color: Colors.white,
-                              ),
+                                  height: 10,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  )),
                               const SizedBox(
                                 height: 10.0,
                               ),
                               Container(
                                 height: 6,
                                 width: 100.0,
-                                color: Colors.white,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ],
                           )
@@ -465,7 +457,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _banner() {
     return Container(
-      height: MediaQuery.of(context).size.height * .2,
+      height: MediaQuery.of(context).size.height * .25,
       margin: const EdgeInsets.only(bottom: 20.0, top: 20.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -473,7 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
           image: AssetImage("assets/images/vector/undraw_medicine_b1ol.png"),
           fit: BoxFit.cover,
         ),
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(20.0),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(.4),
@@ -484,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(.4),
@@ -500,7 +492,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(15.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,11 +541,14 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 8.0,
               ),
-              Text(
-                "Bienvenue sur SOS Docteur la plateforme de télé consultation qui vous permet d'être en contact permanent et en toute confidentialité avec les spécialistes de santé !",
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  "Bienvenue sur SOS Docteur la plateforme de télé consultation qui vous permet d'être en contact permanent et en toute confidentialité avec les spécialistes de santé !",
+                  style: GoogleFonts.lato(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0,
+                  ),
                 ),
               )
             ],
@@ -577,7 +572,7 @@ class _HomeScreenState extends State<HomeScreen> {
             offset: const Offset(0, 10),
           )
         ],
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(20.0),
       ),
       child: Row(
         children: [
@@ -703,19 +698,24 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 50.0,
             width: 60.0,
             decoration: BoxDecoration(
-              color: primaryColor,
+              gradient: LinearGradient(
+                colors: [
+                  primaryColor,
+                  Colors.cyan,
+                ],
+              ),
               borderRadius: const BorderRadius.horizontal(
-                right: Radius.circular(5.0),
+                right: Radius.circular(20.0),
               ),
             ),
             child: Material(
               borderRadius: const BorderRadius.horizontal(
-                right: Radius.circular(5.0),
+                right: Radius.circular(20.0),
               ),
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: const BorderRadius.horizontal(
-                  right: Radius.circular(5.0),
+                  right: Radius.circular(20.0),
                 ),
                 onTap: () async {
                   Xloading.showLottieLoading(context);
