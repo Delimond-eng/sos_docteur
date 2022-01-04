@@ -30,17 +30,20 @@ class _AuthScreenState extends State<AuthScreen> {
               gradient: LinearGradient(
                   tileMode: TileMode.clamp,
                   colors: [
-                    primaryColor.withOpacity(.8),
-                    Colors.white.withOpacity(.5)
+                    primaryColor,
+                    primaryColor.withOpacity(.7),
+                    Colors.white.withOpacity(.8),
+                    Colors.white.withOpacity(.4),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter),
             ),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     height: 50.0,
@@ -51,11 +54,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       children: [
                         Container(
                           child: Text(
-                            "SOs Docteur",
+                            "SOS  Docteur",
                             style: style1(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 16.0),
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16.0,
+                            ),
                           ),
                         ),
                         Row(

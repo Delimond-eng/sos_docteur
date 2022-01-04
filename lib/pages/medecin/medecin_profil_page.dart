@@ -1028,6 +1028,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage> {
                             textEntite.text,
                             textEtude.text,
                             dateStart,
+                            certificatPic,
                             dateEnd,
                             textVille.text,
                             textPays.text,

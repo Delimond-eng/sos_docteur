@@ -6,6 +6,8 @@ import 'package:sos_docteur/models/medecins/schedule_model.dart';
 class MedecinController extends GetxController {
   static MedecinController instance = Get.find();
 
+  var medecinId = storage.read("medecin_id");
+
   @override
   void onInit() {
     super.onInit();
@@ -21,31 +23,37 @@ class MedecinController extends GetxController {
   var medecinRdvs = List<ScheduleConsultationsRdv>().obs;
 
   Future<void> refreshDatas() async {
-    try {
-      var medecin = await MedecinApi.voirProfil();
-      medecinProfil.value = medecin;
-      refreshExamens();
-      refreshRdvs();
-    } catch (err) {
-      print("error from refreshing data $err");
+    if (medecinId != null) {
+      try {
+        var medecin = await MedecinApi.voirProfil();
+        medecinProfil.value = medecin;
+        refreshExamens();
+        refreshRdvs();
+      } catch (err) {
+        print("error from refreshing data $err");
+      }
     }
   }
 
   Future<void> refreshExamens() async {
-    try {
-      var e = await MedecinApi.voirExamens();
-      medecinsExamens.value = e.examens;
-    } catch (err) {
-      print("error from refreshing data $err");
+    if (medecinId != null) {
+      try {
+        var e = await MedecinApi.voirExamens();
+        medecinsExamens.value = e.examens;
+      } catch (err) {
+        print("error from refreshing data $err");
+      }
     }
   }
 
   Future<void> refreshRdvs() async {
-    try {
-      var r = await MedecinApi.voirRdvs();
-      medecinRdvs.value = r.consultationsRdv;
-    } catch (err) {
-      print("error from refreshing data $err");
+    if (medecinId != null) {
+      try {
+        var r = await MedecinApi.voirRdvs();
+        medecinRdvs.value = r.consultationsRdv;
+      } catch (err) {
+        print("error from refreshing data $err");
+      }
     }
   }
 }

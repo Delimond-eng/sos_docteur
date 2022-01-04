@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:sos_docteur/models/patients/account_model.dart';
+import 'package:sos_docteur/widgets/custom_checkbox_widget.dart';
+import 'package:sos_docteur/widgets/custom_dropdown.dart';
 
 import '../../index.dart';
 
@@ -22,10 +24,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final textPass = TextEditingController();
   final textConfirmation = TextEditingController();
   String countryCode = "";
+  bool allowed = false;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -60,19 +64,20 @@ class _RegisterPageState extends State<RegisterPage> {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  color: Colors.grey.withOpacity(.3),
-                  blurRadius: 12.0,
-                  offset: const Offset(0, 3))
+                color: Colors.grey.withOpacity(.3),
+                blurRadius: 12.0,
+                offset: const Offset(0, 3),
+              )
             ],
           ),
           child: IntlPhoneField(
             controller: textPhone,
             keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintMaxLines: 9,
-              contentPadding: const EdgeInsets.only(top: 10, bottom: 10),
+              contentPadding: EdgeInsets.only(top: 10, bottom: 10),
               hintText: "n° de téléphone",
-              hintStyle: const TextStyle(color: Colors.black54, fontSize: 14.0),
+              hintStyle: TextStyle(color: Colors.black54, fontSize: 14.0),
               border: InputBorder.none,
               counterText: '',
             ),
@@ -95,97 +100,31 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Flexible(
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30.0)),
-                  child: DropdownButton<String>(
-                    menuMaxHeight: 300,
-                    dropdownColor: Colors.white,
-                    alignment: Alignment.centerRight,
-                    borderRadius: BorderRadius.circular(8.0),
-                    style: GoogleFonts.lato(color: Colors.black),
-                    value: gender,
-                    underline: SizedBox(),
-                    hint: Text(
-                      "  Sexe...",
-                      style: GoogleFonts.mulish(
-                          color: Colors.grey[600],
-                          fontSize: 15.0,
-                          fontStyle: FontStyle.italic),
-                    ),
-                    isExpanded: true,
-                    items: ["Masculin", "Féminin"].map((e) {
-                      return DropdownMenuItem<String>(
-                          value: e,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: Text(
-                              "$e",
-                              style:
-                                  GoogleFonts.lato(fontWeight: FontWeight.w400),
-                            ),
-                          ));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        gender = value;
-                      });
-                    },
-                  ),
+                child: CustomDropdown(
+                  items: const ["Masculin", "Féminin"],
+                  hintText: " Sexe...",
+                  selectedValue: gender,
+                  onChanged: (value) {
+                    setState(() {
+                      gender = value;
+                    });
+                  },
                 ),
               ),
               const SizedBox(
                 width: 10.0,
               ),
               Flexible(
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: DropdownButton<String>(
-                    menuMaxHeight: 300,
-                    alignment: Alignment.centerRight,
-                    dropdownColor: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    style: GoogleFonts.lato(color: Colors.black),
-                    value: typeUser,
-                    underline: SizedBox(),
-                    hint: Text(
-                      "  Vous êtes",
-                      style: GoogleFonts.mulish(
-                          color: Colors.grey[600],
-                          fontSize: 15.0,
-                          fontStyle: FontStyle.italic),
-                    ),
-                    isExpanded: true,
-                    items: ["Médecin", "Patient"].map((e) {
-                      return DropdownMenuItem<String>(
-                          value: e,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: Text(
-                              "$e",
-                              style:
-                                  GoogleFonts.lato(fontWeight: FontWeight.w400),
-                            ),
-                          ));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        typeUser = value;
-                      });
-                    },
-                  ),
-                ),
-              )
+                  child: CustomDropdown(
+                hintText: " Vous êtes ?",
+                items: const ["Médecin", "Patient"],
+                selectedValue: typeUser,
+                onChanged: (value) {
+                  setState(() {
+                    typeUser = value;
+                  });
+                },
+              ))
             ],
           ),
         ),
@@ -213,6 +152,22 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(
           height: 10.0,
         ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          child: CostumChexkBox(
+            hasColored: false,
+            title: "J'acceptes les politiques de confidentialité !",
+            value: allowed,
+            onChanged: () {
+              setState(() {
+                allowed = !allowed;
+              });
+            },
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
         Container(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
           height: 50.0,
@@ -221,13 +176,16 @@ class _RegisterPageState extends State<RegisterPage> {
           child: RaisedButton(
             onPressed: registerMedecin,
             color: primaryColor,
-            child: Text("Créer".toUpperCase(),
-                style: style1(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.5)),
+            child: Text(
+              "Créer".toUpperCase(),
+              style: style1(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 1.5),
+            ),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
+              borderRadius: BorderRadius.circular(30.0),
+            ),
           ),
         )
       ],
@@ -240,10 +198,10 @@ class _RegisterPageState extends State<RegisterPage> {
         " Saisie obligatoire !",
         "vous devez entrer votre nom complet!",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -253,10 +211,10 @@ class _RegisterPageState extends State<RegisterPage> {
         " Saisie obligatoire !",
         "vous devez entrer votre adresse email!",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -267,10 +225,10 @@ class _RegisterPageState extends State<RegisterPage> {
         " Saisie obligatoire !",
         "vous devez entrer votre téléphone!",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -281,10 +239,10 @@ class _RegisterPageState extends State<RegisterPage> {
         " Saisie obligatoire !",
         "vous devez entrer votre mot de passe de sécurité!",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -295,10 +253,10 @@ class _RegisterPageState extends State<RegisterPage> {
         " Saisie obligatoire !",
         "vous devez sélectionner votre sexe !",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -310,10 +268,24 @@ class _RegisterPageState extends State<RegisterPage> {
         "La confirmation de votre mot de passe a echoué !",
         snackPosition: SnackPosition.TOP,
         duration: const Duration(seconds: 5),
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
+      );
+      return;
+    }
+
+    if (!hasPasswordValidated(textPass.text)) {
+      Get.snackbar(
+        "Mot de passe trop faible!",
+        "Le mot de passe doit au moins contenir des lettres majuscules & minuscules, des chiffres et des caractères spéciaux !",
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 8),
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
+        maxWidth: MediaQuery.of(context).size.width - 4,
+        borderRadius: 8,
       );
       return;
     }
@@ -335,18 +307,33 @@ class _RegisterPageState extends State<RegisterPage> {
 
     var result;
 
-    if (typeUser == "Patient") {
-      Xloading.showLottieLoading(context);
-      result = await PatientApi.registerAccount(patient: patient);
-    } else if (typeUser == "Médecin") {
-      Xloading.showLottieLoading(context);
-      result = await MedecinApi.registerAccount(medecin: medecin);
+    if (allowed) {
+      if (typeUser == "Patient") {
+        Xloading.showLottieLoading(context);
+        result = await PatientApi.registerAccount(patient: patient);
+      } else if (typeUser == "Médecin") {
+        Xloading.showLottieLoading(context);
+        result = await MedecinApi.registerAccount(medecin: medecin);
+      } else {
+        XDialog.showErrorMessage(
+          context,
+          color: Colors.amber[900],
+          title: "Action obligatoire!",
+          message:
+              "vous devez sélectionner le type d'utilisateur que vous êtes!",
+        );
+        return;
+      }
     } else {
-      XDialog.showErrorMessage(
-        context,
-        color: Colors.amber[900],
-        title: "Action obligatoire!",
-        message: "vous devez sélectionner le type d'utilisateur que vous êtes!",
+      Get.snackbar(
+        "Action obligatoire !",
+        "vous devez accepter nos conditions & politiques de confidentialité !",
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
+        maxWidth: MediaQuery.of(context).size.width - 4,
+        borderRadius: 8,
+        duration: const Duration(seconds: 5),
       );
       return;
     }
@@ -355,12 +342,12 @@ class _RegisterPageState extends State<RegisterPage> {
       Xloading.dismiss();
       Get.snackbar(
         "Echec !",
-        "la création du compte n'a pas été effectuée!,\nemail ou numéro de téléphone déjà est déjà utilisé pour un autre Médecin!",
+        "la création du compte n'a pas été effectuée!,\nemail ou numéro de téléphone est déjà utilisé pour un autre $typeUser!",
         snackPosition: SnackPosition.TOP,
-        colorText: Colors.white,
-        backgroundColor: Colors.amber[900],
+        colorText: Colors.red[100],
+        backgroundColor: Colors.black87,
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
         duration: const Duration(seconds: 5),
       );
       return;
@@ -374,7 +361,7 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.green[700],
         duration: const Duration(seconds: 5),
         maxWidth: MediaQuery.of(context).size.width - 4,
-        borderRadius: 2,
+        borderRadius: 8,
       );
       Future.delayed(const Duration(seconds: 3));
       widget.onBackToLogin();

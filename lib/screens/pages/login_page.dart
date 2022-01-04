@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sos_docteur/models/patients/account_model.dart';
+import 'package:sos_docteur/widgets/custom_checkbox_widget.dart';
 
 import '../../index.dart';
 import '../home_screen.dart';
@@ -28,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
           child: AuthInputText(
             icon: CupertinoIcons.person_circle_fill,
-            hintText: "Entez votre email / n° de téléphone",
+            hintText: "Entez votre email ou n° de téléphone",
             inputController: identifiant,
             keyType: TextInputType.emailAddress,
             isPassWord: false,
@@ -71,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: CostumChexkBox(
                   title: "Patient",
                   value: isPatient,
+                  hasColored: true,
                   onChanged: () {
                     setState(() {
                       isPatient = true;
@@ -86,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: CostumChexkBox(
                   title: "Médecin",
                   value: isMedecin,
+                  hasColored: true,
                   onChanged: () {
                     setState(() {
                       isPatient = false;
@@ -112,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                   "Obligatoire !",
                   "vous devez cocher la une case d'utilisation !",
                   snackPosition: SnackPosition.TOP,
-                  colorText: Colors.white,
+                  colorText: Colors.red[200],
                   backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
                   borderRadius: 10,
@@ -125,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                   "Saisie obligatoire !",
                   "vous devez entrer votre identifiant pour vous connecter!",
                   snackPosition: SnackPosition.TOP,
-                  colorText: Colors.white,
+                  colorText: Colors.red[200],
                   backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
                   borderRadius: 10,
@@ -137,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                   "Saisie obligatoire !",
                   "vous devez entrer votre mot de passe pour vous connecter!",
                   snackPosition: SnackPosition.TOP,
-                  colorText: Colors.white,
+                  colorText: Colors.red[200],
                   backgroundColor: Colors.black87,
                   maxWidth: MediaQuery.of(context).size.width - 4,
                   borderRadius: 10,
@@ -161,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                     "Identifiants erronés !",
                     "vos identifiants de connexion sont erronés !",
                     snackPosition: SnackPosition.TOP,
-                    colorText: Colors.white,
+                    colorText: Colors.red[200],
                     backgroundColor: Colors.black87,
                     maxWidth: MediaQuery.of(context).size.width - 4,
                     borderRadius: 10,
@@ -190,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                     "Identifiants erronés !",
                     "vos identifiants de connexion sont erronés !",
                     snackPosition: SnackPosition.TOP,
-                    colorText: Colors.white,
+                    colorText: Colors.red[200],
                     backgroundColor: Colors.black87,
                     maxWidth: MediaQuery.of(context).size.width - 4,
                     borderRadius: 10,
@@ -242,98 +245,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         )
       ],
-    );
-  }
-}
-
-class CostumChexkBox extends StatelessWidget {
-  final bool value;
-  final Function onChanged;
-  final String title;
-  const CostumChexkBox({
-    Key key,
-    this.value = false,
-    this.onChanged,
-    this.title,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onChanged,
-      child: Container(
-        height: 50.0,
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          color: (value) ? Colors.blue[200] : Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(.3),
-              blurRadius: 12.0,
-              offset: const Offset(0, 3),
-            )
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              height: 20.0,
-              width: 20.0,
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              padding: const EdgeInsets.all(2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 2.0,
-                  color: Colors.blue[800],
-                ),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(.3),
-                    blurRadius: 12.0,
-                    offset: const Offset(0, 3),
-                  )
-                ],
-              ),
-              child: Container(
-                height: 18.0,
-                width: 18.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: (value)
-                      ? LinearGradient(
-                          colors: [
-                            Colors.blue,
-                            Colors.blue[800],
-                          ],
-                        )
-                      : const LinearGradient(
-                          colors: [
-                            Colors.white,
-                            Colors.white,
-                          ],
-                        ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 10.0,
-            ),
-            Text(
-              title,
-              style: GoogleFonts.lato(
-                letterSpacing: 1.0,
-                color: (value) ? Colors.white : Colors.black87,
-                fontSize: 14.0,
-                fontWeight: (value) ? FontWeight.w600 : FontWeight.w400,
-              ),
-            )
-          ],
-        ),
-      ),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -35,8 +34,6 @@ class MedecinHomeScreen extends StatefulWidget {
 class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
-  StreamSubscription<DataConnectionStatus> listener;
-
   String uid = storage.read("medecin_id").toString();
 
   @override
@@ -47,7 +44,6 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    listener.cancel();
   }
 
   @override

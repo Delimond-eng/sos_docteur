@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -9,7 +9,6 @@ import 'index.dart';
 import 'screens/home_screen.dart';
 import 'screens/home_screen_for_medecin.dart';
 import 'services/db_service.dart';
-import 'utilities/config.dart';
 import 'video_calls/permissions.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,8 +21,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool isMedecin = storage.read("isMedecin") ?? false;
 
-  StreamSubscription<DataConnectionStatus> listener;
-
   @override
   void initState() {
     super.initState();
@@ -33,12 +30,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void dispose() {
     super.dispose();
-    listener.cancel();
   }
 
   Future<void> initLoading() async {
     await handleCameraAndMic(Permission.camera);
     await handleCameraAndMic(Permission.microphone);
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.none) {
+      await Navigator.pushAndRemoveUntil(
+          context,
+          PageTransition(
+            type: PageTransitionType.leftToRightWithFade,
+            child: DataConnectionScreen(),
+          ),
+          (Route<dynamic> route) => false);
+      return;
+    }
     await DBService.initDb();
     if (isMedecin) {
       await medecinController.refreshDatas();
@@ -63,20 +72,6 @@ class _SplashScreenState extends State<SplashScreen> {
           (Route<dynamic> route) => false);
       return;
     }
-    /*listener = DataConnectionChecker().onStatusChange.listen((status) async {
-      if (status == DataConnectionStatus.connected) {
-        
-      } else {
-        await Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: DataConnectionScreen(),
-          ),
-          (Route<dynamic> route) => false,
-        );
-      }
-    });*/
   }
 
   @override
@@ -90,13 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 image: AssetImage("assets/images/shapes/cap7.png"),
                 fit: BoxFit.fill)),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.black87.withOpacity(.8), primaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          decoration: BoxDecoration(color: Colors.black.withOpacity(.8)),
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -106,21 +95,21 @@ class _SplashScreenState extends State<SplashScreen> {
                     height: 100,
                     width: 100.0,
                     decoration: BoxDecoration(
-                      color: Colors.blue[900],
+                      color: Colors.black87,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
-                        const BoxShadow(
-                          color: Colors.black38,
+                        BoxShadow(
+                          color: Colors.black.withOpacity(.4),
                           blurRadius: 12.0,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         )
                       ],
                     ),
                     padding: const EdgeInsets.all(8.0),
-                    child: const Center(
+                    child: Center(
                       child: SpinKitWave(
-                        color: Colors.white,
-                        duration: Duration(seconds: 1),
+                        color: Colors.blue[100],
+                        duration: const Duration(seconds: 1),
                       ),
                     ),
                   ),
@@ -130,36 +119,41 @@ class _SplashScreenState extends State<SplashScreen> {
                   Container(
                     alignment: Alignment.bottomCenter,
                     child: Center(
-                      child: RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.lato(
-                            fontSize: 20.0,
-                            color: Colors.white,
-                            shadows: [
-                              const Shadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10.0,
-                                  offset: Offset(0, 2))
+                      child: Shimmer.fromColors(
+                        enabled: true,
+                        baseColor: primaryColor,
+                        highlightColor: Colors.cyan,
+                        child: RichText(
+                          text: TextSpan(
+                            style: GoogleFonts.lato(
+                              fontSize: 20.0,
+                              color: Colors.white,
+                              shadows: [
+                                const Shadow(
+                                    color: Colors.black26,
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 2))
+                              ],
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: 'SOS',
+                                style: GoogleFonts.lato(
+                                  letterSpacing: 1.20,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const TextSpan(text: "  "),
+                              TextSpan(
+                                text: 'Docteur',
+                                style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.blue[800],
+                                ),
+                              ),
                             ],
                           ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: 'SOS',
-                              style: GoogleFonts.lato(
-                                letterSpacing: 1.20,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const TextSpan(text: "  "),
-                            TextSpan(
-                              text: 'docteur',
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.w900,
-                                color: Colors.blue[800],
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
@@ -167,15 +161,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  Shimmer(
+                  Shimmer.fromColors(
                     direction: ShimmerDirection.ltr,
                     enabled: true,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blue[700],
-                        Colors.white,
-                      ],
-                    ),
+                    baseColor: primaryColor,
+                    highlightColor: Colors.cyan,
                     child: Container(
                       alignment: Alignment.center,
                       height: 5.0,

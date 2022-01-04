@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
 import 'package:badges/badges.dart';
-import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -13,10 +11,12 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sos_docteur/constants/controllers.dart';
 import 'package:sos_docteur/constants/style.dart';
 import 'package:sos_docteur/models/configs_model.dart';
 import 'package:sos_docteur/models/inernal_data_model.dart';
+import 'package:sos_docteur/models/patients/home_model.dart';
 import 'package:sos_docteur/pages/patient/doctor_detail_page.dart';
 import 'package:sos_docteur/pages/patient/patient_examens_page.dart';
 import 'package:sos_docteur/pages/patient/patient_schedule_page.dart';
@@ -40,35 +40,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
-  StreamSubscription<DataConnectionStatus> listener;
-
   bool isConnected = storage.read("isPatient") ?? false;
 
   final TextEditingController _searchController = TextEditingController();
-
-  dataChecker() {
-    /*listener = DataConnectionChecker().onStatusChange.listen((status) async {
-      if (status == DataConnectionStatus.disconnected) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: DataConnectionScreen(),
-          ),
-          (Route<dynamic> route) => false,
-        );
-      } else {
-        Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: HomeScreen(),
-          ),
-          (Route<dynamic> route) => false,
-        );
-      }
-    });*/
-  }
 
   @override
   void initState() {
@@ -78,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    //listener.cancel();
   }
 
   String uid = storage.read('patient_id').toString();
@@ -146,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 20.0, right: 20.0, bottom: 5.0),
+                              left: 15.0, right: 15.0, bottom: 10.0),
                           child: _searchBar(), //SearchInput(),
                         ),
                         Expanded(
@@ -160,9 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                    left: 16.0,
-                                    right: 16.0,
-                                    top: 5.0,
+                                    left: 15.0,
+                                    right: 15.0,
                                   ),
                                   child: _banner(),
                                 ),
@@ -174,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       itemCount: patientController
                                           .currentMedecins.length,
                                       padding: const EdgeInsets.only(
-                                          left: 20, bottom: 10.0),
+                                          left: 15, bottom: 10.0),
                                       scrollDirection: Axis.horizontal,
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (context, index) {
@@ -215,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 17.0, top: 10.0, right: 18.0),
+                                      left: 15.0, top: 10.0, right: 15.0),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -266,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     physics: const BouncingScrollPhysics(),
                                     scrollDirection: Axis.horizontal,
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0,
+                                      horizontal: 15.0,
                                       vertical: 10.0,
                                     ),
                                     shrinkWrap: true,
@@ -290,75 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Container(
                                   width: _size.width,
                                   padding: const EdgeInsets.only(bottom: 50.0),
-                                  child: patientController
-                                          .platformMedecins.isEmpty
-                                      ? Center(
-                                          child: Lottie.asset(
-                                            "assets/lotties/70780-no-result-found.json",
-                                            height: 120.0,
-                                            width: 120.0,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        )
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0),
-                                          itemCount: patientController
-                                              .platformMedecins.length,
-                                          itemBuilder: (context, index) {
-                                            var medecin = patientController
-                                                .platformMedecins[index];
-                                            return MedCard(
-                                              medecin: medecin,
-                                              onPressed: () async {
-                                                Xloading.showLottieLoading(
-                                                    context);
-                                                var mDatas = await PatientApi
-                                                    .viewMedecinProfil(
-                                                        medecin.medecinId);
-                                                String o =
-                                                    medecin.photo.length > 100
-                                                        ? medecin.photo
-                                                        : "";
-                                                String s = medecin
-                                                        .specialites.isNotEmpty
-                                                    ? medecin.specialites[0]
-                                                        .specialite
-                                                    : "aucune spécialité";
-                                                IMedecins current = IMedecins(
-                                                  medecinId: medecin.medecinId,
-                                                  nom: medecin.nom,
-                                                  photo: o,
-                                                  specialite: s,
-                                                  cote: medecin.cote.toString(),
-                                                );
-                                                await DBService
-                                                    .insertNewMedecin(
-                                                  medecin: current,
-                                                  where: medecin.medecinId,
-                                                );
-                                                Xloading.dismiss();
-                                                Navigator.push(
-                                                  context,
-                                                  PageTransition(
-                                                    type: PageTransitionType
-                                                        .leftToRightWithFade,
-                                                    alignment:
-                                                        Alignment.topCenter,
-                                                    child: DoctorDetailPage(
-                                                      profil: mDatas
-                                                          .content.profile,
-                                                      supDatas: medecin,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ),
+                                  child: medecinsListView(),
                                 )
                               ],
                             ),
@@ -445,6 +349,120 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget medecinsListView() {
+    return FutureBuilder(
+      future: patientController.medecinsList,
+      builder: (context, AsyncSnapshot<List<HomeMedecins>> snapshot) {
+        if (snapshot.data == null) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Shimmer.fromColors(
+              direction: ShimmerDirection.ltr,
+              baseColor: Colors.grey[500],
+              highlightColor: Colors.grey[100],
+              enabled: true,
+              child: Column(
+                children: [
+                  for (int i = 0; i < 8; i++) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 30,
+                                width: 200,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: 10,
+                                width: 200,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Container(
+                                height: 6,
+                                width: 100.0,
+                                color: Colors.white,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ]
+                ],
+              ),
+            ),
+          );
+        } else {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              var medecin = snapshot.data[index];
+              return MedCard(
+                medecin: medecin,
+                onPressed: () async {
+                  Xloading.showLottieLoading(context);
+                  var mDatas =
+                      await PatientApi.viewMedecinProfil(medecin.medecinId);
+                  String o = medecin.photo.length > 100 ? medecin.photo : "";
+                  String s = medecin.specialites.isNotEmpty
+                      ? medecin.specialites[0].specialite
+                      : "aucune spécialité";
+                  IMedecins current = IMedecins(
+                    medecinId: medecin.medecinId,
+                    nom: medecin.nom,
+                    photo: o,
+                    specialite: s,
+                    cote: medecin.cote.toString(),
+                  );
+                  await DBService.insertNewMedecin(
+                    medecin: current,
+                    where: medecin.medecinId,
+                  );
+                  Xloading.dismiss();
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRightWithFade,
+                      alignment: Alignment.topCenter,
+                      child: DoctorDetailPage(
+                        profil: mDatas.content.profile,
+                        supDatas: medecin,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
   Widget _banner() {
     return Container(
       height: MediaQuery.of(context).size.height * .2,
@@ -487,50 +505,55 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RichText(
-                text: TextSpan(
-                  text:
-                      "Bienvenu ${(storage.read('patient_name') != null) ? storage.read('patient_name') : ''} sur ",
-                  style: GoogleFonts.lato(
-                    fontSize: 17.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    shadows: [
-                      const Shadow(
-                        color: Colors.black26,
-                        blurRadius: 10.0,
-                        offset: Offset(0, 2),
-                      )
+              Shimmer.fromColors(
+                enabled: true,
+                baseColor: Colors.white,
+                highlightColor: Colors.cyan,
+                child: RichText(
+                  text: TextSpan(
+                    text:
+                        "Bienvenu ${(storage.read('patient_name') != null) ? storage.read('patient_name') : ''} sur ",
+                    style: GoogleFonts.lato(
+                      fontSize: 17.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      shadows: [
+                        const Shadow(
+                          color: Colors.black26,
+                          blurRadius: 10.0,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'SOS',
+                        style: GoogleFonts.lato(
+                          letterSpacing: 1.20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.cyan[100],
+                        ),
+                      ),
+                      const TextSpan(text: "  "),
+                      TextSpan(
+                        text: 'Docteur',
+                        style: GoogleFonts.lato(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.cyan[100],
+                        ),
+                      ),
                     ],
                   ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'SOS',
-                      style: GoogleFonts.lato(
-                        letterSpacing: 1.20,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.cyan[100],
-                      ),
-                    ),
-                    const TextSpan(text: "  "),
-                    TextSpan(
-                      text: 'Docteur',
-                      style: GoogleFonts.lato(
-                        fontWeight: FontWeight.w900,
-                        color: Colors.cyan[100],
-                      ),
-                    ),
-                  ],
                 ),
               ),
               const SizedBox(
                 height: 8.0,
               ),
               Text(
-                "La plateforme numérique qui vous permet de rester en contact permenant avec nos meilleurs spécialistes de santé !",
+                "Bienvenue sur SOS Docteur la plateforme de télé consultation qui vous permet d'être en contact permanent et en toute confidentialité avec les spécialistes de santé !",
                 style: GoogleFonts.lato(
                   color: Colors.white,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                 ),
               )
             ],
@@ -568,7 +591,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding:
                       const EdgeInsets.only(top: 14, bottom: 10, left: 10),
                   hintText: "Recherche...",
-                  icon: Icon(CupertinoIcons.search, color: Colors.grey[400]),
                   hintStyle:
                       GoogleFonts.lato(color: Colors.grey[400], fontSize: 16),
                   suffixIcon: Container(

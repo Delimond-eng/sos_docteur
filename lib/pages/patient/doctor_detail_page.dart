@@ -11,12 +11,14 @@ import 'package:sos_docteur/constants/style.dart';
 import 'package:sos_docteur/index.dart';
 import 'package:sos_docteur/models/patients/home_model.dart';
 import 'package:sos_docteur/models/patients/medecin_data_profil_view_model.dart';
+import 'package:sos_docteur/pages/medecin/widgets/photo_viewer_widget.dart';
 import 'package:sos_docteur/pages/patient/widgets/custom_expandable.dart';
 import 'package:sos_docteur/screens/auth_screen.dart';
 import 'package:sos_docteur/utilities/utilities.dart';
 import 'package:sos_docteur/widgets/user_session_widget.dart';
 
 import 'avis_details_page.dart';
+import 'widgets/study_card.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final Profile profil;
@@ -487,7 +489,6 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
       ),
       child: widget.profil.etudesFaites != null
           ? ListView.builder(
-              scrollDirection: Axis.horizontal,
               itemCount: widget.profil.etudesFaites.length,
               itemBuilder: (context, index) {
                 var data = widget.profil.etudesFaites[index];
@@ -498,6 +499,20 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                   periodeDebut: data.periodeDebut.split('/')[2],
                   periodeFin: data.periodeFin.split('/')[2],
                   pays: data.adresse.pays,
+                  onViewed:
+                      data.certificat != null && data.certificat.length > 200
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PhotoViewer(
+                                    tag: data.institut,
+                                    image: data.certificat,
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
                 );
               },
             )
@@ -953,80 +968,6 @@ class DateCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class StudyCard extends StatelessWidget {
-  final String institut;
-  final String certificat;
-  final String etude;
-  final String periodeDebut;
-  final String periodeFin;
-  final String pays;
-  const StudyCard({
-    Key key,
-    this.institut,
-    this.certificat,
-    this.etude,
-    this.pays,
-    this.periodeDebut,
-    this.periodeFin,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        HeadingTitle(
-          color: Colors.blue[800],
-          icon: Icons.cast_for_education_rounded,
-          title: "${etude.toUpperCase()}, pays:",
-          subTitle: "à $institut de $periodeDebut à $periodeFin",
-        ),
-        const SizedBox(height: 8.0),
-        if (certificat.length > 200 && certificat != null)
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: MemoryImage(
-                  base64Decode(certificat),
-                ),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(.2),
-                  blurRadius: 12.0,
-                  offset: const Offset(0, 3),
-                )
-              ],
-            ),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-          )
-        else
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(.2),
-                  blurRadius: 12.0,
-                  offset: const Offset(0, 3),
-                )
-              ],
-            ),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-          )
-      ],
     );
   }
 }

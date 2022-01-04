@@ -17,11 +17,10 @@ class MedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var _size = MediaQuery.of(context).size;
     return Stack(
-      overflow: Overflow.visible,
       children: [
         Container(
           height: 110,
-          margin: const EdgeInsets.only(bottom: 10.0, top: 10.0),
+          margin: const EdgeInsets.only(bottom: 8.0),
           width: _size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
