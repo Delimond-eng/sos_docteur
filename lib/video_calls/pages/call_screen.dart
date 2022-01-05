@@ -299,6 +299,9 @@ class _CallScreenState extends State<CallScreen> {
   }
 
   void _onCallEnd(BuildContext context) async {
+    Xloading.showLottieLoading(context);
+    await MedecinApi.consulting(consultId: widget.call.consultId, key: "end");
+    Xloading.dismiss();
     await CallMethods.endCall(call: widget.call);
     Navigator.pop(context);
   }

@@ -28,10 +28,10 @@ class SpecialityCard extends StatelessWidget {
         ],
       ),
       child: Material(
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(30.0),
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(30.0),
           onTap: onPressed,
           child: Padding(
             padding: const EdgeInsets.all(10.0),

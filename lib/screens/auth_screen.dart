@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sos_docteur/screens/pages/login_page.dart';
 import 'package:sos_docteur/screens/pages/register_page.dart';
 
@@ -53,13 +54,35 @@ class _AuthScreenState extends State<AuthScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          child: Text(
-                            "SOS  Docteur",
-                            style: style1(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 16.0,
-                            ),
+                          margin: const EdgeInsets.only(top: 12.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "SOS  Docteur",
+                                style: style1(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 2.0,
+                              ),
+                              Shimmer.fromColors(
+                                enabled: true,
+                                baseColor: Colors.red,
+                                highlightColor: Colors.white,
+                                child: Text(
+                                  "24h/24, 7j/7",
+                                  style: style1(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Row(

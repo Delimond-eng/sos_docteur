@@ -23,6 +23,7 @@ class ScheduleModel {
 }
 
 class ScheduleConsultationsRdv {
+  String consultationRdvId;
   String patientId;
   String nom;
   String telephone;
@@ -31,7 +32,8 @@ class ScheduleConsultationsRdv {
   String heureFin;
 
   ScheduleConsultationsRdv(
-      {this.patientId,
+      {this.consultationRdvId,
+      this.patientId,
       this.nom,
       this.telephone,
       this.consultationDate,
@@ -39,6 +41,7 @@ class ScheduleConsultationsRdv {
       this.heureFin});
 
   ScheduleConsultationsRdv.fromJson(Map<String, dynamic> json) {
+    consultationRdvId = json["consultation_rdv_id"];
     patientId = json['patient_id'];
     nom = json['nom'];
     telephone = json['telephone'];
@@ -49,6 +52,7 @@ class ScheduleConsultationsRdv {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['consultation_rdv_id'] = this.consultationRdvId;
     data['patient_id'] = this.patientId;
     data['nom'] = this.nom;
     data['telephone'] = this.telephone;

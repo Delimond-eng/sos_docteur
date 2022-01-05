@@ -245,27 +245,50 @@ class _MedecinScheddulePageState extends State<MedecinScheddulePage>
               String uPic = storage.read('photo');
 
               Call call = Call(
-                  callerId: uid,
-                  callerName: uName,
-                  callerPic: uPic,
-                  callerType: "medecin",
-                  receiverName: data.nom,
-                  receiverPic: "",
-                  receiverType: "medecin",
-                  receiverId: data.patientId,
-                  channelId:
-                      '$uid${data.patientId}${math.Random().nextInt(1000).toString()}');
-              await CallMethods.makeCall(call: call);
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CallScreen(
-                    role: ClientRole.Broadcaster,
-                    call: call,
-                    hasCaller: true,
-                  ),
-                ),
+                callerId: uid,
+                callerName: uName,
+                callerPic: uPic,
+                callerType: "medecin",
+                receiverName: data.nom,
+                receiverPic: "",
+                receiverType: "medecin",
+                receiverId: data.patientId,
+                channelId:
+                    '$uid${data.patientId}${math.Random().nextInt(1000).toString()}',
+                consultId: data.consultationRdvId,
               );
+              Xloading.showLottieLoading(context);
+              await MedecinApi.consulting(
+                consultRef:
+                    '$uid${data.patientId}${math.Random().nextInt(1000).toString()}',
+                consultId: data.consultationRdvId,
+                key: "start",
+              ).then((result) async {
+                Xloading.dismiss();
+                if (result != null) {
+                  await CallMethods.makeCall(call: call);
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CallScreen(
+                        role: ClientRole.Broadcaster,
+                        call: call,
+                        hasCaller: true,
+                      ),
+                    ),
+                  );
+                } else {
+                  Get.snackbar(
+                    "Echec de la vidéo conférence !",
+                    "une erreur est survenu lors du traitement de l'opération, veuillez reéssayer ultérieurement !",
+                    snackPosition: SnackPosition.BOTTOM,
+                    colorText: Colors.red[200],
+                    backgroundColor: Colors.black87,
+                    maxWidth: MediaQuery.of(context).size.width - 4,
+                    borderRadius: 10,
+                  );
+                }
+              });
             },
             onCancelled: () {},
           );

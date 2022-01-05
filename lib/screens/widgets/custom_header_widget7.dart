@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sos_docteur/constants/style.dart';
 import 'package:sos_docteur/utilities/utilities.dart';
 import 'package:sos_docteur/widgets/menu_button.dart';
@@ -18,17 +19,41 @@ class Header1 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MenuButton(onPressed: onOpenMenu),
               const SizedBox(
                 width: 8.0,
               ),
-              Text(
-                "SOS Docteur",
-                style: style1(
-                    color: Colors.blue[800],
-                    fontWeight: FontWeight.w900,
-                    fontSize: 18.0),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "SOS Docteur",
+                    style: style1(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 2.0,
+                  ),
+                  Shimmer.fromColors(
+                    enabled: true,
+                    baseColor: Colors.red,
+                    highlightColor: Colors.white,
+                    child: Text(
+                      "24h/24, 7j/7",
+                      style: style1(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -64,9 +89,13 @@ class Header1 extends StatelessWidget {
                     const SizedBox(
                       width: 8.0,
                     ),
-                    Text("Se connecter",
-                        style: style1(
-                            fontWeight: FontWeight.w700, color: Colors.white))
+                    Text(
+                      "Se connecter",
+                      style: style1(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    )
                   ],
                 ),
               ),

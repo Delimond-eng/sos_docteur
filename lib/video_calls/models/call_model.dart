@@ -8,18 +8,19 @@ class Call {
   String receiverPic;
   String receiverType;
   String channelId;
+  String consultId;
 
-  Call({
-    this.callerId,
-    this.callerName,
-    this.callerType,
-    this.receiverId,
-    this.receiverName,
-    this.callerPic,
-    this.receiverPic,
-    this.receiverType,
-    this.channelId,
-  });
+  Call(
+      {this.callerId,
+      this.callerName,
+      this.callerType,
+      this.receiverId,
+      this.receiverName,
+      this.callerPic,
+      this.receiverPic,
+      this.receiverType,
+      this.channelId,
+      this.consultId});
 
   // to map
   Map<String, dynamic> toMap() {
@@ -32,6 +33,7 @@ class Call {
     map["receiver_id"] = receiverId;
     map["receiver_name"] = receiverName;
     map["channel_id"] = channelId;
+    map["consultation_id"] = consultId;
     return map;
   }
 
@@ -46,5 +48,6 @@ class Call {
     receiverName = map["receiver_name"];
     receiverType = map["receiver_type"];
     channelId = map["channel_id"];
+    consultId = map["consultation_id"];
   }
 }

@@ -172,8 +172,8 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   return;
                 } else {
-                  await medecinController.refreshDatas();
                   Xloading.dismiss();
+                  await medecinController.refreshDatas();
                   await Navigator.pushAndRemoveUntil(
                       context,
                       PageTransition(
@@ -201,8 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   return;
                 } else {
-                  await patientController.refreshDatas();
                   Xloading.dismiss();
+                  await patientController.refreshDatas();
                   Navigator.pushAndRemoveUntil(
                       context,
                       PageTransition(

@@ -80,7 +80,7 @@ class MenuCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: const DecorationImage(
-            image: AssetImage("assets/images/shapes/bg10.jpg"),
+            image: AssetImage("assets/images/shapes/bg2.png"),
             fit: BoxFit.cover,
             scale: 1.5,
           ),

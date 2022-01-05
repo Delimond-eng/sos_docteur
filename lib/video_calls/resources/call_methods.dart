@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sos_docteur/services/medecins_api_services/med_api.dart';
-import 'package:sos_docteur/utilities/utilities.dart';
 import 'package:sos_docteur/video_calls/models/call_model.dart';
 
 class CallMethods {
@@ -25,8 +23,6 @@ class CallMethods {
                 .runTransaction((txn) async => txn.delete(document.reference));
           });
         });
-        await MedecinApi.consulting(
-            consultId: storage.read("consult_id"), key: "end");
       } catch (err) {
         print("error from delete statment $err");
       }

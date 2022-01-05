@@ -174,7 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
           width: MediaQuery.of(context).size.width,
           // ignore: deprecated_member_use
           child: RaisedButton(
-            onPressed: registerMedecin,
+            onPressed: (allowed) ? registerMedecin : null,
             color: primaryColor,
             child: Text(
               "Créer".toUpperCase(),

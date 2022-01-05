@@ -26,8 +26,6 @@ import 'package:sos_docteur/screens/widgets/doctor_card.dart';
 import 'package:sos_docteur/screens/widgets/speciality_card_widget.dart';
 import 'package:sos_docteur/services/db_service.dart';
 import 'package:sos_docteur/utilities/utilities.dart';
-
-import 'package:sos_docteur/widgets/bottom_menu_btn.dart';
 import 'package:sos_docteur/widgets/menu_item_widget.dart';
 
 import '../index.dart';
@@ -47,11 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   String uid = storage.read('patient_id').toString();
@@ -142,48 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .currentMedecins.isNotEmpty)
                                   Container(
                                     height: 250.0,
-                                    child: ListView.builder(
-                                      itemCount: patientController
-                                          .currentMedecins.length,
-                                      padding: const EdgeInsets.only(
-                                          left: 15, bottom: 10.0),
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const BouncingScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        var medecin = patientController
-                                            .currentMedecins[index];
-                                        return CurrentMedCard(
-                                          medecin: medecin,
-                                          onPressed: () async {
-                                            /*Xloading.showLottieLoading(context);
-                                            var mDatas = await PatientApi
-                                                .viewMedecinProfil(
-                                                    medecin.medecinId);
-                                            Xloading.dismiss();
-                                            HomeMedecins m = HomeMedecins(
-                                              cote: int.parse(medecin.cote),
-                                              nom: medecin.nom,
-                                              photo: medecin.photo,
-                                              medecinId: medecin.medecinId,
-                                              specialites: [],
-                                            );
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType
-                                                    .leftToRightWithFade,
-                                                alignment: Alignment.topCenter,
-                                                child: DoctorDetailPage(
-                                                  profil:
-                                                      mDatas.content.profile,
-                                                  supDatas: m,
-                                                ),
-                                              ),
-                                            );*/
-                                          },
-                                        );
-                                      },
-                                    ),
+                                    child: currentMedecinsListView(),
                                   ),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -195,9 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Text(
                                     "Filtrez le Médecin par spécialité",
                                     style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w500,
                                       fontSize: 17.0,
-                                      letterSpacing: 1.0,
                                       color: primaryColor,
                                     ),
                                   ),
@@ -205,28 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Container(
                                   height:
                                       MediaQuery.of(context).size.height * .12,
-                                  child: ListView.builder(
-                                    itemCount:
-                                        patientController.specialities.length,
-                                    physics: const BouncingScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 15.0,
-                                      vertical: 10.0,
-                                    ),
-                                    shrinkWrap: true,
-                                    // ignore: missing_return
-                                    itemBuilder: (context, index) {
-                                      var data =
-                                          patientController.specialities[index];
-                                      return SpecialityCard(
-                                        title: data.specialite,
-                                        icon: "assets/icons/filter1.svg",
-                                        isActive: data.isActive,
-                                        onPressed: () async {},
-                                      );
-                                    },
-                                  ),
+                                  child: specialitiesListView(),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -238,10 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Text(
                                     "Nos Médecins",
                                     style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 17.0,
-                                        letterSpacing: 1.0,
-                                        color: primaryColor),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17.0,
+                                      color: primaryColor,
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -260,77 +190,77 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          bottomSheet: (isConnected)
-              ? Container(
-                  height: 60,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BottomMenuBtn(
-                        icon: Icon(
-                          CupertinoIcons.house_fill,
-                          size: 15.0,
-                          color: primaryColor,
-                        ),
-                        label: "Acceuil      ",
-                        onPressed: () {
-                          FlutterRingtonePlayer.stop();
-                        },
-                        isActive: true,
-                      ),
-                      BottomMenuBtn(
-                        icon: Badge(
-                          badgeContent: Obx(() {
-                            return Text('${patientController.meetings.length}',
-                                style: style1(color: Colors.white));
-                          }),
-                          position: const BadgePosition(top: -12, end: -10),
-                          child: const Icon(CupertinoIcons.calendar,
-                              size: 15.0, color: Colors.grey),
-                        ),
-                        label: "Rendez-vous    ",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: PatientSchedulePage(),
-                            ),
-                          );
-                        },
-                      ),
-                      BottomMenuBtn(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.bottomToTop,
-                              child: PatientExamenPage(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(
-                          CupertinoIcons.doc_plaintext,
-                          size: 18.0,
-                          color: Colors.grey,
-                        ),
-                        label: "Mes examens",
-                      ),
-                    ],
-                  ),
-                )
-              : null,
           drawer: Drawer(
             elevation: 0,
             child: SideMenu(),
           ),
         ),
       ),
+    );
+  }
+
+  Widget currentMedecinsListView() {
+    return ListView.builder(
+      itemCount: patientController.currentMedecins.length,
+      padding: const EdgeInsets.only(left: 15, bottom: 10.0),
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        var medecin = patientController.currentMedecins[index];
+        return CurrentMedCard(
+          medecin: medecin,
+          onPressed: () async {
+            /*Xloading.showLottieLoading(context);
+              var mDatas = await PatientApi
+                  .viewMedecinProfil(
+                      medecin.medecinId);
+              Xloading.dismiss();
+              HomeMedecins m = HomeMedecins(
+                cote: int.parse(medecin.cote),
+                nom: medecin.nom,
+                photo: medecin.photo,
+                medecinId: medecin.medecinId,
+                specialites: [],
+              );
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType
+                      .leftToRightWithFade,
+                  alignment: Alignment.topCenter,
+                  child: DoctorDetailPage(
+                    profil:
+                        mDatas.content.profile,
+                    supDatas: m,
+                  ),
+                ),
+              );*/
+          },
+        );
+      },
+    );
+  }
+
+  Widget specialitiesListView() {
+    return ListView.builder(
+      itemCount: patientController.specialities.length,
+      physics: const BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 15.0,
+        vertical: 10.0,
+      ),
+      shrinkWrap: true,
+      // ignore: missing_return
+      itemBuilder: (context, index) {
+        var data = patientController.specialities[index];
+        return SpecialityCard(
+          title: data.specialite,
+          icon: "assets/icons/filter1.svg",
+          isActive: data.isActive,
+          onPressed: () async {},
+        );
+      },
     );
   }
 
@@ -358,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 100,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
                           const SizedBox(
@@ -457,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _banner() {
     return Container(
-      height: MediaQuery.of(context).size.height * .25,
+      height: MediaQuery.of(context).size.height * .22,
       margin: const EdgeInsets.only(bottom: 20.0, top: 20.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -506,16 +436,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     text:
                         "Bienvenu ${(storage.read('patient_name') != null) ? storage.read('patient_name') : ''} sur ",
                     style: GoogleFonts.lato(
-                      fontSize: 17.0,
+                      fontSize: 20.0,
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
-                      shadows: [
-                        const Shadow(
-                          color: Colors.black26,
-                          blurRadius: 10.0,
-                          offset: Offset(0, 2),
-                        )
-                      ],
                     ),
                     children: <TextSpan>[
                       TextSpan(
@@ -543,11 +466,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Flexible(
                 child: Text(
-                  "Bienvenue sur SOS Docteur la plateforme de télé consultation qui vous permet d'être en contact permanent et en toute confidentialité avec les spécialistes de santé !",
+                  "La plateforme de télé consultation qui vous permet d'être en contact permanent et en toute confidentialité avec les spécialistes de santé !",
                   style: GoogleFonts.lato(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
-                    fontSize: 16.0,
                   ),
                 ),
               )

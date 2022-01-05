@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sos_docteur/constants/globals.dart';
 import 'package:sos_docteur/models/patients/patient_diagnostics_model.dart';
 import 'package:sos_docteur/pages/medecin/widgets/photo_viewer_widget.dart';
@@ -48,13 +49,6 @@ class _PatientExamenPageState extends State<PatientExamenPage> {
                         horizontal: 16.0, vertical: 15.0),
                     child: _header(),
                   ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  topBtn(context),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
                   Expanded(
                     child: Obx(() {
                       return Container(
@@ -67,10 +61,10 @@ class _PatientExamenPageState extends State<PatientExamenPage> {
                                       horizontal: 16.0, vertical: 10.0),
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 1.0,
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 5.0,
-                                    mainAxisSpacing: 5.0,
+                                    childAspectRatio: 1.80,
+                                    crossAxisCount: 1,
+                                    crossAxisSpacing: 10.0,
+                                    mainAxisSpacing: 10.0,
                                   ),
                                   itemCount:
                                       patientController.diagnostics.length,
@@ -127,6 +121,21 @@ class _PatientExamenPageState extends State<PatientExamenPage> {
               ),
             ),
           ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.red,
+          elevation: 10.0,
+          icon: const Icon(CupertinoIcons.cloud_download, color: Colors.white),
+          label: Shimmer.fromColors(
+            baseColor: Colors.white,
+            highlightColor: Colors.cyan,
+            enabled: true,
+            child: Text(
+              "Charger examens",
+              style: GoogleFonts.lato(color: Colors.white),
+            ),
+          ),
+          onPressed: showUploadingFile,
         ),
       ),
     );
@@ -579,31 +588,6 @@ class DiagnosticCard extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
-          top: 2,
-          left: 2,
-          child: Container(
-            padding: const EdgeInsets.all(10.0),
-            color: Colors.white.withOpacity(.8),
-            child: Row(
-              children: [
-                /*
-                Icon(
-                  CupertinoIcons.calendar_today,
-                  color: Colors.blue[900],
-                  size: 15,
-                ),
-                const SizedBox(
-                  width: 10.0,
-                ),
-                Text(
-                  "12/11/2021",
-                  style: GoogleFonts.lato(color: Colors.black),
-                ),*/
-              ],
-            ),
-          ),
-        )
       ],
     );
   }

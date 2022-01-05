@@ -95,6 +95,7 @@ class MedecinApi {
       if (json["error"] != null) {
         return null;
       }
+      print(json);
       return json;
     } else {
       return null;
@@ -230,13 +231,12 @@ class MedecinApi {
               "langue": medecin.langue,
             },
             method: "post",
-            url: "medecins/profile/configuration/langue",
+            url: "medecins/profile/configuration/langues",
           );
         } catch (err) {
           print("error from medecin profil config langue : $err");
         }
     }
-    print(response);
     if (response != null) {
       var json = jsonDecode(response);
       if (json["error"] != null) {

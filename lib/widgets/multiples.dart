@@ -17,99 +17,105 @@ class FileUploader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onUpload,
-      child: Stack(
-        // ignore: deprecated_member_use
-        overflow: Overflow.visible,
-        children: [
-          Container(
-            height: 150.0,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(5.0),
-              border: Border.all(color: primaryColor, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(.3),
-                  blurRadius: 12.0,
-                  offset: const Offset(0, 3),
-                )
-              ],
-            ),
-            child: Container(
-              decoration: ((uploadFile.isNotEmpty) && (uploadFile != null))
-                  ? BoxDecoration(
-                      image: DecorationImage(
-                          image: MemoryImage(
-                            base64Decode(uploadFile),
-                          ),
-                          fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(5.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(.3),
-                          blurRadius: 12.0,
-                          offset: const Offset(0, 3),
+    return Stack(
+      // ignore: deprecated_member_use
+      overflow: Overflow.visible,
+      children: [
+        Container(
+          height: 150.0,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Colors.white30,
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: primaryColor, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(.3),
+                blurRadius: 12.0,
+                offset: const Offset(0, 3),
+              )
+            ],
+          ),
+          child: Container(
+            decoration: ((uploadFile.isNotEmpty) && (uploadFile != null))
+                ? BoxDecoration(
+                    image: DecorationImage(
+                        image: MemoryImage(
+                          base64Decode(uploadFile),
                         ),
-                      ],
-                    )
-                  : null,
-              child: Center(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (uploadFile.isEmpty)
-                    Text("Certificat",
-                        style: GoogleFonts.lato(color: primaryColor)),
-                  const SizedBox(height: 10.0),
-                  Icon(
-                    Icons.upload,
-                    color:
-                        uploadFile.isEmpty ? primaryColor : Colors.green[700],
-                    size: 30.0,
-                  ),
-                  const SizedBox(height: 5.0),
-                  if (uploadFile.isEmpty)
-                    Text("insérez votre certificat en format [JPG, PNG, JPEG]",
-                        style: GoogleFonts.lato(
-                            color: Colors.grey[600], fontSize: 10.0))
-                ],
-              )),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(.3),
+                        blurRadius: 12.0,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  )
+                : null,
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10.0),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10.0),
+                onTap: onUpload,
+                child: Center(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (uploadFile.isEmpty)
+                      Text("Certificat",
+                          style: GoogleFonts.lato(color: primaryColor)),
+                    const SizedBox(height: 10.0),
+                    Icon(
+                      CupertinoIcons.cloud_upload_fill,
+                      color:
+                          uploadFile.isEmpty ? primaryColor : Colors.green[700],
+                      size: 30.0,
+                    ),
+                    const SizedBox(height: 5.0),
+                    if (uploadFile.isEmpty)
+                      Text(
+                          "insérez votre certificat en format [JPG, PNG, JPEG]",
+                          style: GoogleFonts.lato(
+                              color: Colors.grey[600], fontSize: 12.0))
+                  ],
+                )),
+              ),
             ),
           ),
-          if (uploadFile.isNotEmpty)
-            Positioned(
-              bottom: -10,
-              right: 5,
-              child: GestureDetector(
-                onTap: onCanceled,
-                child: Container(
-                  height: 30.0,
-                  width: 30.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red[200],
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(.4),
-                            blurRadius: 12.0,
-                            offset: const Offset(0, 3))
-                      ]),
-                  child: Center(
-                    child: Icon(
-                      CupertinoIcons.minus,
-                      color: Colors.red[800],
-                      size: 18.0,
-                    ),
+        ),
+        if (uploadFile.isNotEmpty)
+          Positioned(
+            bottom: -10,
+            right: 5,
+            child: GestureDetector(
+              onTap: onCanceled,
+              child: Container(
+                height: 30.0,
+                width: 30.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red[200],
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(.4),
+                          blurRadius: 12.0,
+                          offset: const Offset(0, 3))
+                    ]),
+                child: Center(
+                  child: Icon(
+                    CupertinoIcons.minus,
+                    color: Colors.red[800],
+                    size: 18.0,
                   ),
                 ),
               ),
-            )
-        ],
-      ),
+            ),
+          )
+      ],
     );
   }
 }
@@ -199,13 +205,13 @@ class DatePicker extends StatelessWidget {
     return GestureDetector(
       onTap: showDate,
       child: Container(
-        height: 45.0,
+        height: 50.0,
         padding: const EdgeInsets.symmetric(horizontal: 5.0),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Colors.white30,
           border: Border.all(color: primaryColor, width: 1.0),
           borderRadius: radius == null
-              ? BorderRadius.circular(5.0)
+              ? BorderRadius.circular(10.0)
               : BorderRadius.circular(radius),
           boxShadow: [
             BoxShadow(
