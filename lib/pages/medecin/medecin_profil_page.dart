@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sos_docteur/constants/globals.dart';
 import 'package:sos_docteur/models/configs_model.dart';
-import 'package:sos_docteur/screens/widgets/menu_card.dart';
 import 'package:sos_docteur/widgets/form_input_field.dart';
 
 import '../../index.dart';
@@ -58,9 +57,6 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
       certificatPic = "";
       dateStart = "";
       dateEnd = "";
-    });
-    Future.delayed(const Duration(milliseconds: 500), () {
-      Get.back();
     });
   }
 
@@ -150,7 +146,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
           indicatorSize: TabBarIndicatorSize.tab,
           indicator: const BubbleTabIndicator(
             indicatorHeight: 60.0,
-            indicatorColor: Colors.red,
+            indicatorColor: Colors.cyan,
             tabBarIndicatorSize: TabBarIndicatorSize.label,
             indicatorRadius: 0,
           ),
@@ -1013,18 +1009,22 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                   );
                   return;
                 }
-                specialitesList.forEach((e) async {
+                Xloading.showLottieLoading(context);
+                for (int i = 0; i < specialitesList.length; i++) {
                   Medecins medecin = Medecins(
-                    specialite: e.specialiteId,
+                    specialite: specialitesList[i].specialiteId,
                   );
-                  Xloading.showLottieLoading(context);
+
                   await MedecinApi.configProfil(
                     key: "specialite",
                     medecin: medecin,
                   );
-                });
+                }
                 Xloading.dismiss();
                 XDialog.showSuccessAnimation(context);
+                setState(() {
+                  specialitesList.clear();
+                });
                 await medecinController.refreshDatas();
               },
             ),
@@ -1351,20 +1351,20 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
             child: Column(
               children: [
                 CustomFormField(
-                  hintText: "Entrez le poste...",
-                  errorMessage: "poste requis !",
+                  hintText: "Entrez le nom de la formation sanitaire...",
+                  errorMessage: "le nom de la formation sanitaire requis!",
                   icon: CupertinoIcons.pencil,
-                  title: "Poste",
+                  title: "Formation sanitaire",
                   controller: textEntite,
                 ),
                 const SizedBox(
                   height: 10.0,
                 ),
                 CustomFormField(
-                  hintText: "Entrez votre expérience professionnel...",
-                  errorMessage: "expérience requise !",
+                  hintText: "Entrez le poste...",
+                  errorMessage: "poste requis !",
                   icon: CupertinoIcons.pencil,
-                  title: "Expérience",
+                  title: "Poste",
                   controller: textExperience,
                 ),
                 const SizedBox(
@@ -1501,7 +1501,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                       ],
                     ),
                     onPressed: () async {
-                      if (_formEtudes.currentState.validate()) {
+                      if (_formExperiences.currentState.validate()) {
                         if (dateStart.isEmpty && dateEnd.isEmpty) {
                           Get.snackbar(
                             "Action obligatoire!",
@@ -1539,9 +1539,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                           ville: textVille.text,
                           adresse: textAdresse.text,
                         );
-
                         Xloading.showLottieLoading(context);
-
                         var res = await MedecinApi.configProfil(
                             key: "experience", medecin: medecin);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 List<String> langues = [
   "Sélectionnez une langue",
@@ -21,6 +22,19 @@ class Specialities {
   String icon;
   bool isActive = false;
   Specialities({this.title, this.icon});
+}
+
+Future<PickedFile> takePhoto({ImageSource source}) async {
+  final ImagePicker _picker = ImagePicker();
+  final pickedFile = await _picker.getImage(
+    source: source,
+  );
+
+  if (pickedFile != null) {
+    return pickedFile;
+  } else {
+    return null;
+  }
 }
 
 void showScrollableSheet(context, {List<Widget> childrens}) {

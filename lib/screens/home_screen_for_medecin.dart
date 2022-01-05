@@ -215,16 +215,22 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
                                       subColor: Colors.cyan[50],
                                       icon: "profile-user-svgrepo-com.svg",
                                       title: "Mon profile",
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type: PageTransitionType
-                                                .leftToRightWithFade,
-                                            child:
-                                                const MedecinProfilViewPage(),
-                                          ),
-                                        );
+                                      onPressed: () async {
+                                        var medecinId =
+                                            storage.read("medecin_id");
+                                        if (medecinId != null) {
+                                          Navigator.push(
+                                            context,
+                                            PageTransition(
+                                              type: PageTransitionType
+                                                  .leftToRightWithFade,
+                                              child: MedecinProfilViewPage(
+                                                profile: medecinController
+                                                    .medecinProfil.value,
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       },
                                     ),
                                   ],

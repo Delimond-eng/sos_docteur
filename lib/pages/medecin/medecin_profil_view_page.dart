@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:sos_docteur/constants/globals.dart';
+import 'package:sos_docteur/models/medecins/medecin_profil.dart';
 
 import 'package:sos_docteur/widgets/user_session_widget.dart';
 
@@ -8,16 +13,34 @@ import '../../index.dart';
 import 'medecin_profil_page.dart';
 
 class MedecinProfilViewPage extends StatefulWidget {
-  const MedecinProfilViewPage({Key key}) : super(key: key);
+  final MedecinProfil profile;
+  const MedecinProfilViewPage({Key key, this.profile}) : super(key: key);
 
   @override
   _MedecinProfilViewPageState createState() => _MedecinProfilViewPageState();
 }
 
-class _MedecinProfilViewPageState extends State<MedecinProfilViewPage> {
+class _MedecinProfilViewPageState extends State<MedecinProfilViewPage>
+    with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  String avatar = "";
+
+  TabController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = TabController(vsync: this, length: 4);
+    initData();
+  }
+
+  void initData() {
+    setState(() {
+      avatar = widget.profile.datas.photo;
+    });
   }
 
   @override
@@ -27,219 +50,441 @@ class _MedecinProfilViewPageState extends State<MedecinProfilViewPage> {
       scaffold: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/images/shapes/bg3p.png"),
-                  fit: BoxFit.cover)),
+            image: DecorationImage(
+              image: AssetImage("assets/images/shapes/bg9.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  primaryColor.withOpacity(.9),
-                  Colors.white.withOpacity(.8),
-                  Colors.white.withOpacity(.8)
+                  primaryColor,
+                  primaryColor.withOpacity(.5),
+                  Colors.white10,
+                  Colors.white10,
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
             ),
-            child: Obx(() {
-              return SafeArea(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, top: 20.0),
-                      child: _header(),
-                    ),
-                    const SizedBox(height: 30.0),
-                    Expanded(
-                      // ignore: avoid_unnecessary_containers
-                      child: Container(
-                        child: Scrollbar(
-                          thickness: 5,
-                          radius: const Radius.circular(10.0),
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  child: profilAvatar(),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                  ),
-                                ),
-                                if (medecinController.medecinProfil.value.datas
-                                        .profilSpecialites !=
-                                    null)
-                                  const TitleLine(
-                                    title: "Spécialités",
-                                  ),
-                                if (medecinController.medecinProfil.value.datas
-                                        .profilSpecialites !=
-                                    null)
-                                  ListView.builder(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: medecinController.medecinProfil
-                                        .value.datas.profilSpecialites.length,
-                                    itemBuilder: (context, i) {
-                                      var data = medecinController.medecinProfil
-                                          .value.datas.profilSpecialites[i];
-                                      return SpecCard(
-                                        value: data.specialite,
-                                      );
-                                    },
-                                  ),
-                                if (medecinController.medecinProfil.value.datas
-                                        .profilEtudesFaites !=
-                                    null)
-                                  const TitleLine(
-                                    title: "Etudes faites",
-                                  ),
-                                if (medecinController.medecinProfil.value.datas
-                                        .profilEtudesFaites !=
-                                    null)
-                                  Container(
-                                    height: 170.0,
-                                    child: ListView.builder(
-                                      padding: const EdgeInsets.only(
-                                          top: 5.0, left: 10.0),
-                                      physics: const BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: medecinController
-                                          .medecinProfil
-                                          .value
-                                          .datas
-                                          .profilEtudesFaites
-                                          .length,
-                                      itemBuilder: (context, i) {
-                                        var data = medecinController
-                                            .medecinProfil
-                                            .value
-                                            .datas
-                                            .profilEtudesFaites[i];
-                                        return StudyCard(
-                                          certificatImage: data.certificat,
-                                          university:
-                                              data.institut.toUpperCase(),
-                                          etude: data.etude,
-                                          endAt: data.periodeFin.split("/")[2],
-                                          startAt:
-                                              data.periodeDebut.split("/")[2],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 20.0),
-                                  height: 70.0,
-                                  width: MediaQuery.of(context).size.width,
-                                  // ignore: deprecated_member_use
-                                  child: RaisedButton(
-                                    elevation: 10.0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0)),
-                                    color: Colors.blue[800],
-                                    onPressed: () async {
-                                      Navigator.push(
-                                        context,
-                                        PageTransition(
-                                          type: PageTransitionType
-                                              .rightToLeftWithFade,
-                                          alignment: Alignment.topCenter,
-                                          curve: Curves.easeIn,
-                                          child: MedecinProfilPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Mettre à jour votre profil",
-                                      style:
-                                          GoogleFonts.lato(color: Colors.white),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 20.0, bottom: 10),
+                    child: _header(),
+                  ),
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          tabHeader(),
+                          tabBody(),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              );
-            }),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  profilAvatar() {
-    return Center(
+  Widget tabHeader() {
+    return Container(
+      width: double.infinity,
+      height: 60,
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage("assets/images/shapes/bg10.jpg"),
+          fit: BoxFit.cover,
+          scale: 1.5,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: primaryColor.withOpacity(.9),
+        ),
+        child: TabBar(
+          controller: controller,
+          isScrollable: true,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicator: const BubbleTabIndicator(
+            indicatorHeight: 60.0,
+            indicatorColor: Colors.cyan,
+            tabBarIndicatorSize: TabBarIndicatorSize.label,
+            indicatorRadius: 0,
+          ),
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white,
+          labelStyle: GoogleFonts.mulish(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+          unselectedLabelStyle: GoogleFonts.mulish(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+          tabs: [
+            Tab(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    "assets/icons/user-svgrepo-com.svg",
+                    height: 20,
+                    width: 20.0,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(
+                    width: 5.0,
+                  ),
+                  const Text("Accueil"),
+                ],
+              ),
+            ),
+            Tab(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    "assets/images/vector/medical-specialist-svgrepo-com.svg",
+                    height: 20,
+                    width: 20.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  const Text("Spécialités"),
+                ],
+              ),
+            ),
+            Tab(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    "assets/images/vector/university-svgrepo-com.svg",
+                    height: 20,
+                    width: 20.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  const Text("Etudes"),
+                ],
+              ),
+            ),
+            //
+            Tab(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    "assets/images/vector/professional-profile-with-image-svgrepo-com.svg",
+                    height: 20,
+                    width: 20.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  const Text("Expériences"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget tabBody() {
+    return Expanded(
+      child: Container(
+        child: TabBarView(
+          physics: const BouncingScrollPhysics(),
+          controller: controller,
+          children: [
+            _profilPhoto(context),
+            _profilSpecialites(context),
+            _profilEtudes(context),
+            _profilExperience(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _profilPhoto(context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: Column(
         children: [
-          if (medecinController.medecinProfil.value.datas.photo.length > 200)
+          Center(
+            child: Column(
+              children: [
+                Stack(
+                  // ignore: deprecated_member_use
+                  overflow: Overflow.visible,
+                  children: [
+                    if (avatar.length > 200)
+                      Container(
+                        height: 120.0,
+                        width: 120.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: MemoryImage(
+                                base64Decode(avatar),
+                              ),
+                              fit: BoxFit.cover),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black38,
+                              blurRadius: 12.0,
+                              offset: const Offset(0, 5),
+                            )
+                          ],
+                        ),
+                      )
+                    else
+                      Container(
+                        height: 120.0,
+                        width: 120.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.cyan,
+                              primaryColor,
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(.3),
+                              blurRadius: 12.0,
+                              offset: const Offset(0, 2),
+                            )
+                          ],
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            CupertinoIcons.person_fill,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      bottom: -10,
+                      right: 5.0,
+                      child: GestureDetector(
+                        onTap: () {
+                          _showPhotoEditingSheet();
+                        },
+                        child: Container(
+                          height: 50.0,
+                          width: 50.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black45,
+                                blurRadius: 12.0,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              CupertinoIcons.pencil,
+                              color: Colors.white,
+                              size: 25.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20.0),
+                EditableField(
+                  title: "Nom",
+                  value: "Dr. ${widget.profile.datas.nom}",
+                  onEdit: () {},
+                ),
+                const SizedBox(height: 10.0),
+                EditableField(
+                  title: "Numéro d'ordre",
+                  value: "A02d2d55555",
+                  onEdit: () {},
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Langues parlées",
+                    style: GoogleFonts.lato(
+                        fontSize: 18.0, fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          for (int i = 0; i < 4; i++) ...[
             Container(
-              height: 120.0,
-              width: 120.0,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 5),
+              height: 50.0,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                    image: MemoryImage(
-                      base64Decode(
-                          medecinController.medecinProfil.value.datas.photo),
-                    ),
-                    fit: BoxFit.cover),
+                color: Colors.white54,
+                borderRadius: BorderRadius.circular(10.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black38,
+                    color: Colors.grey.withOpacity(.3),
                     blurRadius: 12.0,
-                    offset: const Offset(0, 5),
+                    offset: const Offset(0, 10.0),
                   )
                 ],
               ),
-            )
-          else
-            Container(
-              height: 120.0,
-              width: 120.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.cyan, primaryColor],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.withOpacity(.3),
-                      blurRadius: 12.0,
-                      offset: const Offset(0, 2))
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      "Langue $i",
+                      style: GoogleFonts.lato(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 30.0,
+                      width: 30.0,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[700],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          CupertinoIcons.delete,
+                          color: Colors.white,
+                          size: 15.0,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
-              child: const Center(
-                child: Icon(
-                  CupertinoIcons.person_fill,
-                  color: Colors.white,
-                  size: 40.0,
-                ),
-              ),
             ),
-          const SizedBox(height: 10.0),
-          Text(
-            "Dr. ${medecinController.medecinProfil.value.datas.nom}",
-            style: style1(
-                color: Colors.black,
-                fontWeight: FontWeight.w800,
-                fontSize: 18.0),
-          ),
+          ]
         ],
       ),
+    );
+  }
+
+  Widget _profilSpecialites(context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      child: Column(
+        children: [
+          for (int i = 0;
+              i < widget.profile.datas.profilSpecialites.length;
+              i++) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 5),
+              height: 50.0,
+              decoration: BoxDecoration(
+                color: Colors.white54,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(.3),
+                    blurRadius: 12.0,
+                    offset: const Offset(0, 10.0),
+                  )
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      widget.profile.datas.profilSpecialites[i].specialite,
+                      style: GoogleFonts.lato(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 30.0,
+                      width: 30.0,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[700],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          CupertinoIcons.delete,
+                          color: Colors.white,
+                          size: 15.0,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _profilEtudes(context) {
+    return Center(
+      child: Text("3"),
+    );
+  }
+
+  Widget _profilExperience(context) {
+    return Center(
+      child: Text("4"),
     );
   }
 
@@ -285,6 +530,188 @@ class _MedecinProfilViewPageState extends State<MedecinProfilViewPage> {
         ),
         if (storage.read("isMedecin") == true) UserSession()
       ],
+    );
+  }
+
+  void _showPhotoEditingSheet() {
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+      elevation: 2,
+      barrierColor: Colors.black26,
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          height: 150.0,
+          padding: const EdgeInsets.all(20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: TileBtn(
+                  icon: CupertinoIcons.photo_on_rectangle,
+                  label: "Gallerie",
+                  onPressed: () async {
+                    var pickedFile =
+                        await takePhoto(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      var bytes = File(pickedFile.path).readAsBytesSync();
+                      setState(() {
+                        avatar = base64Encode(bytes);
+                      });
+                      Medecins medecin = Medecins(photo: avatar);
+                      Xloading.showLottieLoading(context);
+                      var res = await MedecinApi.configProfil(
+                          key: "avatar", medecin: medecin);
+                      if (res != null) {
+                        Xloading.dismiss();
+                        if (res['reponse']['status'] == "success") {
+                          storage.write("photo", avatar);
+                          Get.back();
+
+                          XDialog.showSuccessAnimation(context);
+                          await medecinController.refreshDatas();
+                        } else {
+                          Get.snackbar(
+                            "Echec!",
+                            "mise à jour de la photo de profil à echouée!",
+                            snackPosition: SnackPosition.TOP,
+                            colorText: Colors.white,
+                            backgroundColor: Colors.amber[900],
+                            maxWidth: MediaQuery.of(context).size.width - 4,
+                            borderRadius: 2,
+                            duration: const Duration(seconds: 3),
+                          );
+                        }
+                      }
+                    }
+                    //print(avatar);
+                  },
+                ),
+              ),
+              const SizedBox(width: 20.0),
+              Flexible(
+                child: TileBtn(
+                  onPressed: () async {
+                    var pickedFile =
+                        await takePhoto(source: ImageSource.camera);
+                    if (pickedFile != null) {
+                      var bytes = File(pickedFile.path).readAsBytesSync();
+                      setState(() {
+                        avatar = base64Encode(bytes);
+                      });
+
+                      Medecins medecin = Medecins(photo: avatar);
+                      Xloading.showLottieLoading(context);
+
+                      var res = await MedecinApi.configProfil(
+                          key: "avatar", medecin: medecin);
+
+                      if (res != null) {
+                        Xloading.dismiss();
+                        if (res['reponse']['status'] == "success") {
+                          storage.write("photo", avatar);
+                          Get.back();
+
+                          XDialog.showSuccessAnimation(context);
+                          await medecinController.refreshDatas();
+                        } else {
+                          Get.snackbar(
+                            "Echec!",
+                            "mise à jour de la photo de profil à echouée!",
+                            snackPosition: SnackPosition.TOP,
+                            colorText: Colors.white,
+                            backgroundColor: Colors.amber[900],
+                            maxWidth: MediaQuery.of(context).size.width - 4,
+                            borderRadius: 2,
+                            duration: const Duration(seconds: 3),
+                          );
+                          Get.back();
+                        }
+                      }
+                    }
+                  },
+                  icon: CupertinoIcons.photo_camera,
+                  label: "Prendre une photo",
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class EditableField extends StatelessWidget {
+  final String title;
+  final String value;
+  final Function onEdit;
+  const EditableField({
+    Key key,
+    this.title,
+    this.onEdit,
+    this.value,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      height: 70.0,
+      decoration: BoxDecoration(
+        color: Colors.white54,
+        border: Border(bottom: BorderSide(color: primaryColor, width: .5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(.3),
+            blurRadius: 12.0,
+            offset: const Offset(0, 10.0),
+          )
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 5.0),
+            child: Text(title),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                value,
+                style: style1(
+                  color: primaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.0,
+                ),
+              ),
+              GestureDetector(
+                onTap: onEdit,
+                child: Container(
+                  height: 40.0,
+                  width: 40.0,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Center(
+                    child: Icon(CupertinoIcons.pencil, color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

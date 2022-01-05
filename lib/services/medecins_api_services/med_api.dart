@@ -237,6 +237,7 @@ class MedecinApi {
           print("error from medecin profil config langue : $err");
         }
     }
+    print(response);
     if (response != null) {
       var json = jsonDecode(response);
       if (json["error"] != null) {
