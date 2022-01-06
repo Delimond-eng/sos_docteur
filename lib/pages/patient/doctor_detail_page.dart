@@ -12,13 +12,11 @@ import 'package:sos_docteur/index.dart';
 import 'package:sos_docteur/models/patients/home_model.dart';
 import 'package:sos_docteur/models/patients/medecin_data_profil_view_model.dart';
 import 'package:sos_docteur/pages/medecin/widgets/photo_viewer_widget.dart';
-import 'package:sos_docteur/pages/patient/widgets/custom_expandable.dart';
 import 'package:sos_docteur/screens/auth_screen.dart';
 import 'package:sos_docteur/utilities/utilities.dart';
 import 'package:sos_docteur/widgets/user_session_widget.dart';
 
 import 'avis_details_page.dart';
-import 'widgets/study_card.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final Profile profil;
@@ -48,422 +46,417 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
               const SizedBox(
                 height: 33.0,
               ),
-              buildExpandedDetails(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Expanded buildExpandedDetails() {
-    return Expanded(
-      child: Container(
-        child: Scrollbar(
-          thickness: 5.0,
-          hoverThickness: 5.0,
-          radius: const Radius.circular(5.0),
-          isAlwaysShown: true,
-          child: ListView(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-            children: [
-              CustomAccordion(
-                isExpanded: true,
-                title: "Expériences professionelles",
-                child: buildContainerExperiences(),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              CustomAccordion(
-                title: "Etudes faites",
-                isExpanded: false,
-                child: buildContainerEtudes(),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              CustomAccordion(
-                title: "Autres diplômes",
-                isExpanded: true,
-                child: buildContainerSpeciality(),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              CustomAccordion(
-                title: "Langues parlées",
-                isExpanded: true,
+              Expanded(
                 child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 120.0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 15.0,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(color: Colors.blue, width: 1)),
-                    ),
-                    child: GridView.builder(
-                      padding: EdgeInsets.zero,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 3.5,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 2,
-                        mainAxisSpacing: 2,
-                      ),
-                      itemCount: widget.profil.langues.length,
-                      itemBuilder: (context, index) {
-                        var data = widget.profil.langues[index];
-                        // ignore: avoid_unnecessary_containers
-                        return Container(
-                          padding: const EdgeInsets.all(4.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 10.0,
-                                color: Colors.grey.withOpacity(.3),
-                                offset: const Offset(0, 3),
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const HeaderTiles(
+                            title: "Expériences professionnelles",
+                          ),
+                          if (widget.profil.experiences.isNotEmpty) ...[
+                            for (int index = 0;
+                                index < widget.profil.experiences.length;
+                                index++) ...[
+                              ExpCard(
+                                data: widget.profil.experiences[index],
                               )
                             ],
+                          ],
+                          const HeaderTiles(
+                            title: "Etudes faites",
                           ),
-                          child: Center(
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/icons/speech-svgrepo-com.svg",
-                                  height: 15.0,
-                                  width: 15.0,
-                                  color: primaryColor,
+                          if (widget.profil.etudesFaites.isNotEmpty) ...[
+                            for (int index = 0;
+                                index < widget.profil.etudesFaites.length;
+                                index++) ...[
+                              ECard(
+                                data: widget.profil.etudesFaites[index],
+                              )
+                            ],
+                          ],
+                          const HeaderTiles(
+                            title: "Autres diplômes",
+                          ),
+                          if (widget.supDatas.specialites.isNotEmpty) ...[
+                            for (int i = 0;
+                                i < widget.supDatas.specialites.length;
+                                i++) ...[
+                              SpecCard(
+                                data: widget.supDatas.specialites[i],
+                              )
+                            ],
+                          ],
+                          const HeaderTiles(
+                            title: "Langues parlées",
+                          ),
+                          if (widget.profil.langues.isNotEmpty)
+                            GridView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                childAspectRatio: 3.5,
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5,
+                              ),
+                              itemCount: widget.profil.langues.length,
+                              itemBuilder: (context, index) {
+                                var data = widget.profil.langues[index];
+                                // ignore: avoid_unnecessary_containers
+                                return Container(
+                                  padding: const EdgeInsets.all(4.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.grey.withOpacity(.3),
+                                        offset: const Offset(0, 3),
+                                      )
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/icons/speech-svgrepo-com.svg",
+                                          height: 15.0,
+                                          width: 15.0,
+                                          color: primaryColor,
+                                        ),
+                                        const SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        Text(
+                                          data.langue,
+                                          style: GoogleFonts.lato(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          const Divider(
+                            height: 30.0,
+                            color: Colors.grey,
+                          ),
+                          Column(
+                            children: [
+                              if (widget.profil.agenda.isNotEmpty)
+                                Center(
+                                  child: Text(
+                                    "Veuillez renseigner les champs ci-dessous pour prendre un rendez-vous avec le Médecin !",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.amber[900],
+                                      letterSpacing: 0.50,
+                                      fontSize: 15.0,
+                                    ),
+                                  ),
                                 ),
+                              if (widget.profil.agenda.isNotEmpty)
                                 const SizedBox(
-                                  width: 10.0,
+                                  height: 25.0,
                                 ),
-                                Text(
-                                  data.langue,
-                                  style: GoogleFonts.lato(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                              if (widget.profil.agenda.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.calendar,
+                                        color: primaryColor,
+                                        size: 15.0,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text(
+                                        "Sélectionnez le mois",
+                                        style: style1(
+                                          color: primaryColor,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              const SizedBox(height: 8.0),
+                              if (widget.profil.agenda != null &&
+                                  widget.profil.agenda.isNotEmpty) ...[
+                                Container(
+                                  height: 130,
+                                  child: StatefulBuilder(
+                                    builder: (context, setter) {
+                                      return Scrollbar(
+                                        radius: const Radius.circular(5.0),
+                                        thickness: 4.0,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          physics:
+                                              const BouncingScrollPhysics(),
+                                          padding: const EdgeInsets.only(
+                                            top: 10.0,
+                                            bottom: 10.0,
+                                            left: 15.0,
+                                            right: 15.0,
+                                          ),
+                                          itemCount:
+                                              widget.profil.agenda.length,
+                                          itemBuilder: (context, index) {
+                                            var data =
+                                                widget.profil.agenda[index];
+                                            var list = strSpliter(
+                                                strDateLong(data.date));
+                                            return DateCard(
+                                              isActive: data.isActive,
+                                              months: list[0],
+                                              day: list[1],
+                                              year: list[3],
+                                              onPressed: () {
+                                                heures.clear();
+                                                for (var e
+                                                    in widget.profil.agenda) {
+                                                  if (e.isActive == true) {
+                                                    setter(() {
+                                                      e.isActive = false;
+                                                    });
+                                                  }
+                                                }
+                                                setter(() {
+                                                  data.isActive = true;
+                                                });
+                                                setState(() {
+                                                  heures.addAll(data.heures);
+                                                  selectedDispoId = data
+                                                      .medecinDatesDisponibleId;
+                                                });
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                              // ignore: sized_box_for_whitespace
+
+                              const SizedBox(height: 10.0),
+                              if (heures.isNotEmpty) ...[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.time,
+                                        color: primaryColor,
+                                        size: 20.0,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text(
+                                        "Les heures de disponibilité",
+                                        style: style1(
+                                            color: primaryColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15.0),
+                                      ),
+                                    ],
                                   ),
                                 )
                               ],
-                            ),
-                          ),
-                        );
-                      },
-                    )),
-              ),
-              const SizedBox(
-                height: 25.0,
-              ),
-              Center(
-                child: Text(
-                  "Veuillez renseigner les champs ci-dessous pour prendre un rendez-vous avec le Médecin !",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.w800,
-                      color: Colors.amber[900],
-                      letterSpacing: 0.50,
-                      fontSize: 15.0),
-                ),
-              ),
-              const SizedBox(
-                height: 25.0,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    CupertinoIcons.calendar,
-                    color: primaryColor,
-                    size: 15.0,
-                  ),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    "Sélectionnez le mois",
-                    style: style1(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15.0),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8.0),
-              /*Container(
-                margin: const EdgeInsets.only(top: 12),
-                child: DatePicker(
-                  DateTime.now(),
-                  height: 100.0,
-                  width: 80.0,
-                  initialSelectedDate: DateTime.now(),
-                  selectionColor: primaryColor,
-                  selectedTextColor: Colors.white,
-                  locale: "FR",
-                  dateTextStyle: GoogleFonts.lato(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey),
-                  dayTextStyle: GoogleFonts.lato(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey),
-                  monthTextStyle: GoogleFonts.lato(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey),
-                  onDateChange: (date) {
-                    setState(() {});
-                  },
-                ),
-              )*/
-              if (widget.profil.agenda != null &&
-                  widget.profil.agenda.isNotEmpty)
-                // ignore: sized_box_for_whitespace
-                Container(
-                  height: 130,
-                  child: StatefulBuilder(
-                    builder: (context, setter) {
-                      return Scrollbar(
-                        radius: const Radius.circular(5.0),
-                        thickness: 4.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding:
-                              const EdgeInsets.only(top: 10.0, bottom: 10.0),
-                          itemCount: widget.profil.agenda.length,
-                          itemBuilder: (context, index) {
-                            var data = widget.profil.agenda[index];
-                            var list = strSpliter(strDateLong(data.date));
-                            return DateCard(
-                              isActive: data.isActive,
-                              months: list[0],
-                              day: list[1],
-                              year: list[3],
-                              onPressed: () {
-                                heures.clear();
-                                for (var e in widget.profil.agenda) {
-                                  if (e.isActive == true) {
-                                    setter(() {
-                                      e.isActive = false;
-                                    });
-                                  }
-                                }
-                                setter(() {
-                                  data.isActive = true;
-                                });
-                                setState(() {
-                                  heures.addAll(data.heures);
-                                  selectedDispoId =
-                                      data.medecinDatesDisponibleId;
-                                });
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              const SizedBox(height: 10.0),
-              if (heures.isNotEmpty)
-                Row(
-                  children: [
-                    Icon(
-                      CupertinoIcons.time,
-                      color: primaryColor,
-                      size: 20.0,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      "Les heures de disponibilité",
-                      style: style1(
-                          color: primaryColor,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15.0),
-                    ),
-                  ],
-                ),
-              if (heures.isNotEmpty) const SizedBox(height: 20.0),
-              if (heures.isNotEmpty)
-                Container(
-                  height: 50.0,
-                  child: Scrollbar(
-                    radius: const Radius.circular(5.0),
-                    thickness: 4.0,
-                    scrollbarOrientation: ScrollbarOrientation.bottom,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: heures.length,
-                      itemBuilder: (context, index) {
-                        var data = heures[index];
-                        return TimeCard(
-                          isActive: data.isSelected,
-                          time: "${data.heureDebut} - ${data.heureFin}",
-                          onPressed: () {
-                            for (var e in heures) {
-                              if (e.isSelected == true) {
-                                setState(() {
-                                  e.isSelected = false;
-                                });
-                              }
-                            }
-                            setState(() {
-                              data.isSelected = true;
-                              selectedHoure = data.heureDebut;
-                            });
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              if (heures.isNotEmpty) const SizedBox(height: 20.0),
-              Container(
-                height: 50.0,
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                width: MediaQuery.of(context).size.width,
-                // ignore: deprecated_member_use
-                child: RaisedButton(
-                  onPressed: () async {
-                    bool isConnected = storage.read("isPatient") ?? false;
-                    if (isConnected == false) {
-                      XDialog.showConfirmation(
-                        context: context,
-                        icon: Icons.help_rounded,
-                        title: "Connectez-vous !",
-                        content:
-                            "vous devez vous connecter à votre compte pour prendre un rendez-vous avec le Médecin !",
-                      );
-                      return;
-                    }
-                    if (selectedDispoId.isEmpty) {
-                      Get.snackbar(
-                        "Action obligatoire !",
-                        "vous devez sélectionner une date de disponibilité du médecin!",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.white,
-                        backgroundColor: Colors.amber[900],
-                        maxWidth: MediaQuery.of(context).size.width - 4,
-                        borderRadius: 2,
-                        duration: const Duration(seconds: 3),
-                      );
-                      return;
-                    }
+                              if (heures.isNotEmpty)
+                                const SizedBox(height: 20.0),
+                              if (heures.isNotEmpty) ...[
+                                Container(
+                                  height: 50.0,
+                                  child: Scrollbar(
+                                    radius: const Radius.circular(5.0),
+                                    thickness: 4.0,
+                                    scrollbarOrientation:
+                                        ScrollbarOrientation.bottom,
+                                    child: ListView.builder(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 10.0),
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: heures.length,
+                                      itemBuilder: (context, index) {
+                                        var data = heures[index];
+                                        return TimeCard(
+                                          isActive: data.isSelected,
+                                          time:
+                                              "${data.heureDebut} - ${data.heureFin}",
+                                          onPressed: () {
+                                            for (var e in heures) {
+                                              if (e.isSelected == true) {
+                                                setState(() {
+                                                  e.isSelected = false;
+                                                });
+                                              }
+                                            }
+                                            setState(() {
+                                              data.isSelected = true;
+                                              selectedHoure = data.heureDebut;
+                                            });
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                )
+                              ],
+                              if (heures.isNotEmpty)
+                                const SizedBox(height: 20.0),
 
-                    if (selectedHoure.isEmpty) {
-                      Get.snackbar(
-                        "Action obligatoire !",
-                        "vous devez sélectionner une heure de disponibilité du médecin!",
-                        snackPosition: SnackPosition.TOP,
-                        colorText: Colors.white,
-                        backgroundColor: Colors.amber[900],
-                        maxWidth: MediaQuery.of(context).size.width - 4,
-                        borderRadius: 2,
-                        duration: const Duration(seconds: 3),
-                      );
-                      return;
-                    }
+                              if (widget.profil.agenda.isEmpty)
+                                Center(
+                                  child: Text(
+                                    "Médecin indisponible !",
+                                    style: GoogleFonts.lato(
+                                      fontSize: 18.0,
+                                      color: Colors.red[300],
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                )
+                              else
+                                Container(
+                                  height: 50.0,
 
-                    try {
-                      Xloading.showLottieLoading(context);
-                      var result = await PatientApi.prendreRdvEnLigne(
-                          dateId: selectedDispoId, heure: selectedHoure);
-                      if (result != null) {
-                        Xloading.dismiss();
-                        if (result['reponse']['status'] == "success") {
-                          XDialog.showSuccessAnimation(context);
-                          setState(() {
-                            selectedDispoId = "";
-                            selectedHoure = "";
-                            heures.clear();
-                          });
-                          patientController.refreshDatas();
-                        }
-                      }
-                    } catch (e) {
-                      print(e);
-                    }
-                  },
-                  color: primaryColor,
-                  child: Text(
-                    "Prendre un rendez-vous".toUpperCase(),
-                    style: style1(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(.1),
-                      blurRadius: 12.0,
-                      offset: const Offset(0, 3),
-                    )
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Avis",
-                            style: GoogleFonts.lato(
-                              color: Colors.black54,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 15.0),
+                                  width: MediaQuery.of(context).size.width,
+                                  // ignore: deprecated_member_use
+                                  child: RaisedButton(
+                                    onPressed: () => reserverRdv(context),
+                                    color: primaryColor,
+                                    child: Text(
+                                      "Prendre un rendez-vous".toUpperCase(),
+                                      style: style1(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 1.5,
+                                      ),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+
+                              Container(
+                                height: 50.0,
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 20.0),
+                                width: double.infinity,
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.topCenter,
+                                    image: AssetImage(
+                                      "assets/images/shapes/bg5p.png",
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(.9),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              height: 35.0,
+                                              width: 35.0,
+                                              margin: const EdgeInsets.only(
+                                                  right: 8.0),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.comment,
+                                                  color: primaryColor,
+                                                  size: 15.0,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10.0,
+                                            ),
+                                            Text(
+                                              "Avis",
+                                              style: GoogleFonts.lato(
+                                                color: Colors.black87,
+                                                fontSize: 18.0,
+                                                letterSpacing: 1.0,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        RaisedButton(
+                                          color: Colors.cyan,
+                                          child: Text(
+                                            "voir plus",
+                                            style: GoogleFonts.lato(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0)),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              PageTransition(
+                                                child: AvisDetailsPage(
+                                                  doctorName:
+                                                      widget.supDatas.nom,
+                                                  avis: widget.profil.avis,
+                                                ),
+                                                type: PageTransitionType
+                                                    .leftToRightWithFade,
+                                              ),
+                                            );
+                                          },
+                                          elevation: 5,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              buildContainerCommentaires()
+                            ],
+                          )
                         ],
                       ),
-                      // ignore: deprecated_member_use
-                      RaisedButton(
-                        color: Colors.cyan,
-                        child: Text(
-                          "voir plus",
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              child: AvisDetailsPage(
-                                doctorName: widget.supDatas.nom,
-                                avis: widget.profil.avis,
-                              ),
-                              type: PageTransitionType.leftToRightWithFade,
-                            ),
-                          );
-                        },
-                        elevation: 5,
-                      )
-                    ],
+                    ),
                   ),
                 ),
               ),
-              buildContainerCommentaires(),
             ],
           ),
         ),
@@ -471,58 +464,68 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
     );
   }
 
-  Container buildContainerEtudes() {
-    return Container(
-      height: 250,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(bottom: BorderSide(color: Colors.blue, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(.3),
-            blurRadius: 12.0,
-            offset: const Offset(0, 3),
-          )
-        ],
-      ),
-      child: widget.profil.etudesFaites != null
-          ? ListView.builder(
-              itemCount: widget.profil.etudesFaites.length,
-              itemBuilder: (context, index) {
-                var data = widget.profil.etudesFaites[index];
-                return StudyCard(
-                  certificat: data.certificat,
-                  etude: data.etude,
-                  institut: data.institut,
-                  periodeDebut: data.periodeDebut.split('/')[2],
-                  periodeFin: data.periodeFin.split('/')[2],
-                  pays: data.adresse.pays,
-                  onViewed:
-                      data.certificat != null && data.certificat.length > 200
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PhotoViewer(
-                                    tag: data.institut,
-                                    image: data.certificat,
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
-                );
-              },
-            )
-          : const Center(
-              child: Text("Dossier vide pour l'instant"),
-            ),
-    );
+  Future<void> reserverRdv(context) async {
+    bool isConnected = storage.read("isPatient") ?? false;
+    if (isConnected == false) {
+      XDialog.showConfirmation(
+        context: context,
+        icon: Icons.help_rounded,
+        title: "Connectez-vous !",
+        content:
+            "vous devez vous connecter à votre compte pour prendre un rendez-vous avec le Médecin !",
+      );
+      return;
+    }
+    if (selectedDispoId.isEmpty) {
+      Get.snackbar(
+        "Action obligatoire !",
+        "vous devez sélectionner une date de disponibilité du médecin!",
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.white,
+        backgroundColor: Colors.amber[900],
+        maxWidth: MediaQuery.of(context).size.width - 4,
+        borderRadius: 2,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    if (selectedHoure.isEmpty) {
+      Get.snackbar(
+        "Action obligatoire !",
+        "vous devez sélectionner une heure de disponibilité du médecin!",
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.white,
+        backgroundColor: Colors.amber[900],
+        maxWidth: MediaQuery.of(context).size.width - 4,
+        borderRadius: 2,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    try {
+      Xloading.showLottieLoading(context);
+      var result = await PatientApi.prendreRdvEnLigne(
+          dateId: selectedDispoId, heure: selectedHoure);
+      if (result != null) {
+        Xloading.dismiss();
+        if (result['reponse']['status'] == "success") {
+          XDialog.showSuccessAnimation(context);
+          setState(() {
+            selectedDispoId = "";
+            selectedHoure = "";
+            heures.clear();
+          });
+          patientController.refreshDatas();
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Container buildContainerCommentaires() {
+  Widget buildContainerCommentaires() {
     return Container(
       height: 200.0,
       width: MediaQuery.of(context).size.width,
@@ -545,98 +548,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
     );
   }
 
-  Container buildContainerExperiences() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20.0),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(bottom: BorderSide(color: Colors.blue, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(.3),
-            blurRadius: 12.0,
-            offset: const Offset(0, 3),
-          )
-        ],
-      ),
-      child: (widget.profil.experiences != null &&
-              widget.profil.experiences.isNotEmpty)
-          ? Container(
-              height: 150.0,
-              width: MediaQuery.of(context).size.width,
-              child: Scrollbar(
-                radius: const Radius.circular(5.0),
-                thickness: 2,
-                child: ListView.builder(
-                  itemCount: widget.profil.experiences.length,
-                  itemBuilder: (context, index) {
-                    var data = widget.profil.experiences[index];
-                    return HeadingTitle(
-                      icon: Icons.check_circle_outline_rounded,
-                      color: Colors.black54,
-                      title: data.adresse.pays != null
-                          ? "A travailler à ${data.entite},  ${data.adresse.pays}"
-                          : "A travailler à ${data.entite}",
-                      subTitle:
-                          "De ${data.periodeDebut.split('/')[2]} à ${data.periodeFin.split('/')[2]}",
-                    );
-                  },
-                ),
-              ),
-            )
-          : const Center(
-              child: Text("Aucune expérience !"),
-            ),
-    );
-  }
-
-  Container buildContainerSpeciality() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20.0),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: const Border(bottom: BorderSide(color: Colors.blue, width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(.3),
-            blurRadius: 12.0,
-            offset: const Offset(0, 3),
-          )
-        ],
-      ),
-      child: (widget.supDatas.specialites.isNotEmpty)
-          ? Container(
-              height: 150.0,
-              width: MediaQuery.of(context).size.width,
-              child: (widget.supDatas.specialites.length > 1)
-                  ? Scrollbar(
-                      radius: const Radius.circular(5.0),
-                      thickness: 2,
-                      child: ListView.builder(
-                        itemCount: widget.supDatas.specialites.length,
-                        itemBuilder: (context, index) {
-                          var data = widget.supDatas.specialites[index];
-                          return HeadingTitle(
-                            color: Colors.green[700],
-                            icon: CupertinoIcons.check_mark_circled_solid,
-                            title: data.specialite,
-                          );
-                        },
-                      ),
-                    )
-                  : const Center(
-                      child: Text("Aucune information !"),
-                    ),
-            )
-          : const Center(
-              child: Text("Aucune information !"),
-            ),
-    );
-  }
-
-  Stack buildStackHeader(BuildContext context) {
+  Widget buildStackHeader(BuildContext context) {
     return Stack(
       // ignore: deprecated_member_use
       overflow: Overflow.visible,
@@ -845,25 +757,36 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
             height: 50.0,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(2.0),
-                boxShadow: [
-                  BoxShadow(
-                      blurRadius: 12.0,
-                      color: Colors.black12,
-                      offset: const Offset(0, 3))
-                ]),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(2.0),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 12.0,
+                  color: Colors.black12,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
             child: Center(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.medication,
-                    color: primaryColor,
-                    size: 17.0,
+                  Container(
+                    height: 25.0,
+                    width: 25.0,
+                    decoration: BoxDecoration(
+                      color: primaryColor.withOpacity(.5),
+                    ),
+                    padding: const EdgeInsets.all(5.0),
+                    child: SvgPicture.asset(
+                      "assets/icons/medical-svgrepo-com.svg",
+                      height: 20.0,
+                      width: 20.0,
+                      color: Colors.white,
+                    ),
                   ),
-                  const SizedBox(width: 15.0),
+                  const SizedBox(width: 10.0),
                   Text(
                       "N° d'ordre : ${(widget.profil.numeroOrdre.isNotEmpty) ? widget.profil.numeroOrdre : 'non répertorié'}",
                       style: style1(
@@ -874,6 +797,534 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
           ),
         )
       ],
+    );
+  }
+}
+
+//TODO
+class SpecCard extends StatelessWidget {
+  final HomeSpecialites data;
+  const SpecCard({
+    Key key,
+    this.data,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 8, left: 10.0, right: 10.0),
+      height: 50.0,
+      decoration: BoxDecoration(
+        color: Colors.white54,
+        borderRadius: BorderRadius.circular(5.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(.3),
+            blurRadius: 12.0,
+            offset: const Offset(0, 10.0),
+          )
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 30.0,
+            width: 30.0,
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/icons/medicine-sign.svg",
+                  color: Colors.white,
+                  width: 20.0,
+                  height: 20.0,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10.0,
+          ),
+          Flexible(
+            child: Text(
+              data.specialite,
+              style: GoogleFonts.lato(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//TODO
+class SpeechCard extends StatelessWidget {
+  final Langues data;
+  const SpeechCard({
+    Key key,
+    this.data,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 8, left: 10.0, right: 10.0),
+      height: 50.0,
+      decoration: BoxDecoration(
+        color: Colors.white54,
+        borderRadius: BorderRadius.circular(5.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(.3),
+            blurRadius: 12.0,
+            offset: const Offset(0, 10.0),
+          )
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            height: 30.0,
+            width: 30.0,
+            decoration: BoxDecoration(
+              color: Colors.grey[800],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Center(
+                child: SvgPicture.asset(
+                  "assets/icons/speech-svgrepo-com.svg",
+                  color: Colors.white,
+                  width: 20.0,
+                  height: 20.0,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10.0,
+          ),
+          Flexible(
+            child: Text(
+              data.langue,
+              style: GoogleFonts.lato(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HeaderTiles extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  const HeaderTiles({
+    Key key,
+    this.title,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50.0,
+      margin: const EdgeInsets.symmetric(vertical: 20.0),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+          image: AssetImage("assets/images/shapes/bg5p.png"),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(color: primaryColor.withOpacity(.7)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: [
+              Container(
+                height: 35.0,
+                width: 35.0,
+                margin: const EdgeInsets.only(right: 8.0),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: icon == null
+                      ? SvgPicture.asset(
+                          "assets/icons/filter1.svg",
+                          color: primaryColor,
+                          height: 20.0,
+                          width: 20.0,
+                          fit: BoxFit.scaleDown,
+                        )
+                      : Icon(icon, color: Colors.white, size: 15.0),
+                ),
+              ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Text(
+                title,
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//TODO
+class ExpCard extends StatelessWidget {
+  final Experiences data;
+  const ExpCard({Key key, this.data}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 170,
+      width: double.infinity,
+      margin: const EdgeInsets.only(
+        left: 15.0,
+        right: 15.0,
+        bottom: 10.0,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        image: const DecorationImage(
+          image: AssetImage("assets/images/shapes/bg3.png"),
+          fit: BoxFit.cover,
+        ),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 12.0,
+            color: Colors.black.withOpacity(.1),
+            offset: const Offset(0, 10),
+          )
+        ],
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white.withOpacity(.7),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 12.0,
+              color: Colors.black.withOpacity(.1),
+              offset: const Offset(0, 10),
+            )
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 25.0,
+                      width: 25.0,
+                      decoration: BoxDecoration(
+                        color: primaryColor.withOpacity(.5),
+                      ),
+                      padding: const EdgeInsets.all(5.0),
+                      child: SvgPicture.asset(
+                        "assets/icons/medical-svgrepo-com.svg",
+                        height: 20.0,
+                        width: 20.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      "A Travailler chez ${data.entite}",
+                      style: GoogleFonts.lato(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 15.0, color: Colors.grey),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          height: 25.0,
+                          width: 25.0,
+                          decoration: BoxDecoration(
+                            color: Colors.cyan[900].withOpacity(.5),
+                          ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: const Icon(CupertinoIcons.flag,
+                              color: Colors.white),
+                        ),
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        const Text("Pays"),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5.0,
+                    ),
+                    Text(
+                      data.adresse.pays,
+                      style: GoogleFonts.lato(
+                        color: Colors.cyan[800],
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                Text(
+                  "De ${data.periodeDebut} à ${data.periodeFin}",
+                  style: GoogleFonts.lato(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//TODO
+class ECard extends StatelessWidget {
+  final EtudesFaites data;
+  const ECard({
+    Key key,
+    this.data,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 15.0,
+        right: 15.0,
+        bottom: 10.0,
+      ),
+      child: Stack(
+        children: [
+          Container(
+            height: 180,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              image: const DecorationImage(
+                image: AssetImage("assets/images/shapes/bg3.png"),
+                fit: BoxFit.cover,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 12.0,
+                  color: Colors.black.withOpacity(.1),
+                  offset: const Offset(0, 10),
+                )
+              ],
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.white.withOpacity(.7),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 12.0,
+                    color: Colors.black.withOpacity(.1),
+                    offset: const Offset(0, 10),
+                  )
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 25.0,
+                                width: 25.0,
+                                decoration: BoxDecoration(
+                                  color: primaryColor.withOpacity(.5),
+                                ),
+                                padding: const EdgeInsets.all(5.0),
+                                child: SvgPicture.asset(
+                                  "assets/icons/study.svg",
+                                  height: 20.0,
+                                  width: 20.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8.0,
+                              ),
+                              const Text(
+                                "Institut ou Université",
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 8.0,
+                          ),
+                          Text(
+                            data.institut,
+                            style: GoogleFonts.lato(
+                              color: primaryColor,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 15.0, color: Colors.grey),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 25.0,
+                                width: 25.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.cyan[900].withOpacity(.5),
+                                ),
+                                padding: const EdgeInsets.all(5.0),
+                                child: SvgPicture.asset(
+                                  "assets/icons/study.svg",
+                                  height: 20.0,
+                                  width: 20.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 8.0,
+                              ),
+                              const Text("Etude"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            data.etude,
+                            style: GoogleFonts.lato(
+                              color: Colors.cyan[800],
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      Text(
+                        "De ${data.periodeDebut} à ${data.periodeFin}",
+                        style: GoogleFonts.lato(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 10.0,
+            right: 10.0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[700],
+                borderRadius: BorderRadius.circular(20.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(.2),
+                    blurRadius: 10.0,
+                    offset: const Offset(0, 10.0),
+                  )
+                ],
+              ),
+              child: Material(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(20.0),
+                  onTap: data.certificat != null && data.certificat.length > 200
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PhotoViewer(
+                                tag: data.institut,
+                                image: data.certificat,
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        "Voir diplôme",
+                        style: GoogleFonts.lato(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -892,7 +1343,6 @@ class DateCard extends StatelessWidget {
     this.isActive = false,
     this.onPressed,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return InkWell(

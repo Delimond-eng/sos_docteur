@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await handleCameraAndMic(Permission.camera);
     await handleCameraAndMic(Permission.microphone);
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    /*var connectivityResult = await (Connectivity().checkConnectivity());
 
     if (connectivityResult == ConnectivityResult.none) {
       await Navigator.pushAndRemoveUntil(
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
           (Route<dynamic> route) => false);
       return;
-    }
+    }*/
     await DBService.initDb();
     if (isMedecin) {
       await medecinController.refreshDatas();

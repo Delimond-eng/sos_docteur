@@ -15,7 +15,7 @@ class PickupLayout extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         FlutterRingtonePlayer.stop();
-        return Future.value(false);
+        return Future.value(true);
       },
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance

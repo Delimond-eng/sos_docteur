@@ -237,7 +237,7 @@ class MedecinApi {
           print("error from medecin profil config langue : $err");
         }
     }
-    print(response);
+
     if (response != null) {
       var json = jsonDecode(response);
       if (json["error"] != null) {
@@ -459,6 +459,66 @@ class MedecinApi {
         return null;
       }
       return MedDiagnostics.fromJson(res);
+    } else {
+      return null;
+    }
+  }
+
+  static Future deleteProfile({
+    String subUrl,
+    String key,
+    dynamic value,
+  }) async {
+    String medecinId = storage.read("medecin_id");
+    var response;
+    try {
+      response = await DApi.request(
+        body: <String, dynamic>{
+          "medecin_id": medecinId,
+          key: value,
+        },
+        method: "post",
+        url: "medecins/profile/configuration/$subUrl/supprimer",
+      );
+    } catch (err) {
+      print("error from medecin voir agenda $err");
+    }
+    print(response);
+    if (response != null) {
+      var res = jsonDecode(response);
+      if (res["error"] != null) {
+        return null;
+      }
+      return res;
+    } else {
+      return null;
+    }
+  }
+
+  static Future updateProfile({
+    String key,
+    dynamic value,
+  }) async {
+    String medecinId = storage.read("medecin_id");
+    var response;
+    try {
+      response = await DApi.request(
+        body: <String, dynamic>{
+          "medecin_id": medecinId,
+          key: value,
+        },
+        method: "post",
+        url: "medecins/profile/configuration/compte",
+      );
+    } catch (err) {
+      print("error from medecin voir agenda $err");
+    }
+    if (response != null) {
+      var res = jsonDecode(response);
+      if (res["error"] != null) {
+        return null;
+      }
+      return res;
     } else {
       return null;
     }

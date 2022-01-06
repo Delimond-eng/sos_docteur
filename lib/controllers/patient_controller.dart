@@ -23,8 +23,6 @@ class PatientController extends GetxController {
 
   var diagnostics = List<ExamensPatient>().obs;
 
-  var patientId = storage.read("patient_id");
-
   @override
   onInit() {
     super.onInit();
@@ -42,6 +40,7 @@ class PatientController extends GetxController {
   }
 
   Future<void> refreshDatas() async {
+    var patientId = storage.read("patient_id");
     //var homeDatas = await PatientApi.viewHomeContents();
 
     /*if (homeDatas != null) {

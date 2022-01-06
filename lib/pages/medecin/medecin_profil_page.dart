@@ -311,7 +311,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                           Get.back();
 
                           XDialog.showSuccessAnimation(context);
-                          await medecinController.refreshDatas();
+                          await medecinController.refreshProfil();
                         } else {
                           Get.snackbar(
                             "Echec!",
@@ -355,7 +355,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                           Get.back();
 
                           XDialog.showSuccessAnimation(context);
-                          await medecinController.refreshDatas();
+                          await medecinController.refreshProfil();
                         } else {
                           Get.snackbar(
                             "Echec!",
@@ -664,7 +664,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                                   setState(() {
                                     selectedLangue = langues[0];
                                   });
-                                  await medecinController.refreshDatas();
+                                  await medecinController.refreshProfil();
                                 }
                               } else {
                                 Xloading.dismiss();
@@ -729,7 +729,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                           Xloading.dismiss();
                           if (res["reponse"]["status"] == "success") {
                             XDialog.showSuccessAnimation(context);
-                            await medecinController.refreshDatas();
+                            await medecinController.refreshProfil();
                             Get.back();
                           }
                         } else {
@@ -856,36 +856,41 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                     borderRadius: BorderRadius.circular(8.0),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8.0),
-                      onTap: () {
-                        if (selectedSpeciality != null) {
-                          if (specialitesList.isEmpty) {
-                            setState(() {
-                              specialitesList.add(selectedSpeciality);
-                            });
-                          } else {
-                            for (int i = 0; i < specialitesList.length; i++) {
-                              if (specialitesList[i].specialiteId ==
-                                  selectedSpeciality.specialiteId) {
-                                Get.snackbar(
-                                  "Erreur de doublons !",
-                                  "vous devez pas entrer une spécialité deux fois !",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  colorText: Colors.red[100],
-                                  backgroundColor: Colors.black87,
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width - 4,
-                                  borderRadius: 8,
-                                  duration: const Duration(seconds: 10),
-                                );
-                                return;
+                      onTap: selectedSpeciality != null
+                          ? () {
+                              if (selectedSpeciality != null) {
+                                if (specialitesList.isEmpty) {
+                                  setState(() {
+                                    specialitesList.add(selectedSpeciality);
+                                  });
+                                } else {
+                                  for (int i = 0;
+                                      i < specialitesList.length;
+                                      i++) {
+                                    if (specialitesList[i].specialiteId ==
+                                        selectedSpeciality.specialiteId) {
+                                      Get.snackbar(
+                                        "Erreur de doublons !",
+                                        "vous devez pas entrer une spécialité deux fois !",
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        colorText: Colors.red[100],
+                                        backgroundColor: Colors.black87,
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width -
+                                                4,
+                                        borderRadius: 8,
+                                        duration: const Duration(seconds: 10),
+                                      );
+                                      return;
+                                    }
+                                  }
+                                  setState(() {
+                                    specialitesList.add(selectedSpeciality);
+                                  });
+                                }
                               }
                             }
-                            setState(() {
-                              specialitesList.add(selectedSpeciality);
-                            });
-                          }
-                        }
-                      },
+                          : null,
                       child: const Center(
                         child: Icon(
                           CupertinoIcons.add,
@@ -1025,7 +1030,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                 setState(() {
                   specialitesList.clear();
                 });
-                await medecinController.refreshDatas();
+                await medecinController.refreshProfil();
               },
             ),
           )
@@ -1298,7 +1303,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                               selectedDateEnd = null;
                             });
                             clean();
-                            await medecinController.refreshDatas();
+                            await medecinController.refreshProfil();
                           }
                         } else {
                           Xloading.dismiss();
@@ -1547,7 +1552,7 @@ class _MedecinProfilPageState extends State<MedecinProfilPage>
                           Xloading.dismiss();
                           if (res["reponse"]["status"] == "success") {
                             XDialog.showSuccessAnimation(context);
-                            await medecinController.refreshDatas();
+                            await medecinController.refreshProfil();
                             clean();
                           }
                         } else {

@@ -6,8 +6,6 @@ import 'package:sos_docteur/models/medecins/schedule_model.dart';
 class MedecinController extends GetxController {
   static MedecinController instance = Get.find();
 
-  var medecinId = storage.read("medecin_id");
-
   @override
   void onInit() {
     super.onInit();
@@ -23,10 +21,10 @@ class MedecinController extends GetxController {
   var medecinRdvs = List<ScheduleConsultationsRdv>().obs;
 
   Future<void> refreshDatas() async {
+    var medecinId = storage.read("medecin_id");
     if (medecinId != null) {
       try {
-        var medecin = await MedecinApi.voirProfil();
-        medecinProfil.value = medecin;
+        refreshProfil();
         refreshExamens();
         refreshRdvs();
       } catch (err) {
@@ -35,7 +33,15 @@ class MedecinController extends GetxController {
     }
   }
 
+  Future<void> refreshProfil() async {
+    var medecin = await MedecinApi.voirProfil();
+    if (medecin != null) {
+      medecinProfil.value = medecin;
+    }
+  }
+
   Future<void> refreshExamens() async {
+    var medecinId = storage.read("medecin_id");
     if (medecinId != null) {
       try {
         var e = await MedecinApi.voirExamens();
@@ -47,6 +53,7 @@ class MedecinController extends GetxController {
   }
 
   Future<void> refreshRdvs() async {
+    var medecinId = storage.read("medecin_id");
     if (medecinId != null) {
       try {
         var r = await MedecinApi.voirRdvs();

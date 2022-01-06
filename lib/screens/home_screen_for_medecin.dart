@@ -224,10 +224,7 @@ class _MedecinHomeScreenState extends State<MedecinHomeScreen> {
                                             PageTransition(
                                               type: PageTransitionType
                                                   .leftToRightWithFade,
-                                              child: MedecinProfilViewPage(
-                                                profile: medecinController
-                                                    .medecinProfil.value,
-                                              ),
+                                              child: MedecinProfilViewPage(),
                                             ),
                                           );
                                         }

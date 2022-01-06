@@ -172,8 +172,8 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   return;
                 } else {
-                  Xloading.dismiss();
                   await medecinController.refreshDatas();
+                  Xloading.dismiss();
                   await Navigator.pushAndRemoveUntil(
                       context,
                       PageTransition(
@@ -182,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: MedecinHomeScreen(),
                       ),
                       (Route<dynamic> route) => false);
+
                   return;
                 }
               } else if (isPatient) {
@@ -201,15 +202,16 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   return;
                 } else {
-                  Xloading.dismiss();
                   await patientController.refreshDatas();
-                  Navigator.pushAndRemoveUntil(
+                  Xloading.dismiss();
+                  await Navigator.pushAndRemoveUntil(
                       context,
                       PageTransition(
                         type: PageTransitionType.bottomToTop,
                         child: HomeScreen(),
                       ),
                       (Route<dynamic> route) => false);
+
                   return;
                 }
               }
