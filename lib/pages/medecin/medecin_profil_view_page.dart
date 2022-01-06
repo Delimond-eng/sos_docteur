@@ -245,169 +245,170 @@ class _MedecinProfilViewPageState extends State<MedecinProfilViewPage>
   Widget _profilPhoto(context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-      child: Column(
-        children: [
-          Center(
-            child: Column(
-              children: [
-                Stack(
-                  // ignore: deprecated_member_use
-                  overflow: Overflow.visible,
-                  children: [
-                    if (avatar.length > 200)
-                      Container(
-                        height: 120.0,
-                        width: 120.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: MemoryImage(
-                                base64Decode(avatar),
-                              ),
-                              fit: BoxFit.cover),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black38,
-                              blurRadius: 12.0,
-                              offset: const Offset(0, 5),
-                            )
+      child: Column(children: [
+        Center(
+          child: Column(
+            children: [
+              Stack(
+                // ignore: deprecated_member_use
+                overflow: Overflow.visible,
+                children: [
+                  if (avatar.length > 200)
+                    Container(
+                      height: 120.0,
+                      width: 120.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: MemoryImage(
+                              base64Decode(avatar),
+                            ),
+                            fit: BoxFit.cover),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black38,
+                            blurRadius: 12.0,
+                            offset: const Offset(0, 5),
+                          )
+                        ],
+                      ),
+                    )
+                  else
+                    Container(
+                      height: 120.0,
+                      width: 120.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.cyan,
+                            primaryColor,
                           ],
                         ),
-                      )
-                    else
-                      Container(
-                        height: 120.0,
-                        width: 120.0,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(.3),
+                            blurRadius: 12.0,
+                            offset: const Offset(0, 2),
+                          )
+                        ],
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          CupertinoIcons.person_fill,
+                          color: Colors.white,
+                          size: 40.0,
+                        ),
+                      ),
+                    ),
+                  Positioned(
+                    bottom: -10,
+                    right: 5.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        _showPhotoEditingSheet();
+                      },
+                      child: Container(
+                        height: 50.0,
+                        width: 50.0,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.cyan,
-                              primaryColor,
-                            ],
-                          ),
+                          color: Colors.blue,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(.3),
+                              color: Colors.black45,
                               blurRadius: 12.0,
-                              offset: const Offset(0, 2),
+                              offset: const Offset(0, 3),
                             )
                           ],
                         ),
                         child: const Center(
                           child: Icon(
-                            CupertinoIcons.person_fill,
+                            CupertinoIcons.pencil,
                             color: Colors.white,
-                            size: 40.0,
+                            size: 25.0,
                           ),
                         ),
                       ),
-                    Positioned(
-                      bottom: -10,
-                      right: 5.0,
-                      child: GestureDetector(
-                        onTap: () {
-                          _showPhotoEditingSheet();
-                        },
-                        child: Container(
-                          height: 50.0,
-                          width: 50.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black45,
-                                blurRadius: 12.0,
-                                offset: const Offset(0, 3),
-                              )
-                            ],
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              CupertinoIcons.pencil,
-                              color: Colors.white,
-                              size: 25.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20.0),
-                EditableField(
-                  title: "Nom",
-                  onEdit: () async {
-                    if (textNom.text !=
-                        medecinController.medecinProfil.value.datas.nom) {
-                      await updateProfile(context,
-                          key: "nom", value: textNom.text);
-                    }
-                  },
-                  controller: textNom,
-                ),
-                const SizedBox(height: 10.0),
-                EditableField(
-                  controller: textNumOrder,
-                  title: "Numéro d'ordre",
-                  onEdit: () async {
-                    if (textNumOrder.text !=
-                        medecinController.medecinProfil.value.datas.numOrdre) {
-                      await updateProfile(context,
-                          key: "numero_ordre", value: textNumOrder.text);
-                    }
-                  },
-                ),
-                const SizedBox(height: 10.0),
-                EditableField(
-                  title: "Email",
-                  controller: textEmail,
-                  onEdit: () async {
-                    if (textEmail.text !=
-                        medecinController.medecinProfil.value.datas.email) {
-                      await updateProfile(context,
-                          key: "email", value: textEmail.text);
-                    }
-                  },
-                ),
-                const SizedBox(height: 10.0),
-                EditableField(
-                  title: "Téléphone",
-                  controller: textTelephone,
-                  onEdit: () async {
-                    if (textTelephone.text !=
-                        medecinController.medecinProfil.value.datas.telephone) {
-                      await updateProfile(context,
-                          key: "telephone", value: textTelephone.text);
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          if (medecinController
-              .medecinProfil.value.datas.profilLangues.isNotEmpty)
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Langues parlées",
-                      style: GoogleFonts.lato(
-                          fontSize: 18.0, fontWeight: FontWeight.w800),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              EditableField(
+                title: "Nom",
+                onEdit: () async {
+                  if (textNom.text !=
+                      medecinController.medecinProfil.value.datas.nom) {
+                    await updateProfile(context,
+                        key: "nom", value: textNom.text);
+                  }
+                },
+                controller: textNom,
+              ),
+              const SizedBox(height: 10.0),
+              EditableField(
+                controller: textNumOrder,
+                title: "Numéro d'ordre",
+                onEdit: () async {
+                  if (textNumOrder.text !=
+                      medecinController.medecinProfil.value.datas.numOrdre) {
+                    await updateProfile(context,
+                        key: "numero_ordre", value: textNumOrder.text);
+                  }
+                },
+              ),
+              const SizedBox(height: 10.0),
+              EditableField(
+                title: "Email",
+                controller: textEmail,
+                onEdit: () async {
+                  if (textEmail.text !=
+                      medecinController.medecinProfil.value.datas.email) {
+                    await updateProfile(context,
+                        key: "email", value: textEmail.text);
+                  }
+                },
+              ),
+              const SizedBox(height: 10.0),
+              EditableField(
+                title: "Téléphone",
+                controller: textTelephone,
+                onEdit: () async {
+                  if (textTelephone.text !=
+                      medecinController.medecinProfil.value.datas.telephone) {
+                    await updateProfile(context,
+                        key: "telephone", value: textTelephone.text);
+                  }
+                },
+              )
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        if ((medecinController.medecinProfil.value.datas.profilLangues !=
+                null) &&
+            (medecinController
+                .medecinProfil.value.datas.profilLangues.isNotEmpty)) ...[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Langues parlées",
+                    style: GoogleFonts.lato(
+                        fontSize: 18.0, fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+            ],
+          ),
           for (int i = 0;
               i <
                   medecinController
@@ -488,7 +489,7 @@ class _MedecinProfilViewPageState extends State<MedecinProfilViewPage>
             ),
           ]
         ],
-      ),
+      ]),
     );
   }
 
